@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.ygst.cenggeche">
+
+    <!-- Required -->
+    <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+
+
+    <!-- Optional. Required for location feature -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.GET_TASKS" />
+
+    <application
+        android:name=".app.MyApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/BaseAppTheme">
+
+        <!--启动欢迎页-->
+        <activity
+            android:name=".ui.activity.SplashActivity"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!--登录页-->
+        <activity android:name=".ui.activity.login.LoginActivity" />
+        <!--主界面-->
+        <activity android:name=".ui.activity.MainActivity" />
+
+        <!--添加好友-->
+        <activity android:name=".ui.activity.addfriend.AddFriendActivity" />
+
+        <!--联系人列表（测试）-->
+        <activity android:name=".ui.test.ContactsActivity" />
+
+
+        <!--下面是极光IM功能展示界面-->
+        <activity
+            android:name="im.sdk.debug.RegisterAndLoginActivity"
+            android:launchMode="singleTask" />
+        <activity
+            android:name="im.sdk.debug.activity.TypeActivity"
+            android:launchMode="singleTask" />
+        <activity android:name="im.sdk.debug.activity.setting.RegisterActivity" />
+        <activity android:name="im.sdk.debug.activity.setting.SettingMainActivity" />
+        <activity android:name="im.sdk.debug.activity.setting.InfoActivity" />
+        <activity android:name="im.sdk.debug.activity.setting.AssertEqualsActivity" />
+        <activity android:name="im.sdk.debug.activity.setting.GetUserInfoActivity" />
+        <activity android:name="im.sdk.debug.activity.setting.UpdatePassword" />
+        <activity android:name="im.sdk.debug.activity.setting.UpdateUserInfoActivity" />
+        <activity android:name="im.sdk.debug.activity.createmessage.CreateMessageActivity" />
+        <activity android:name="im.sdk.debug.activity.createmessage.CreateSigTextMessageActivity" />
+        <activity android:name="im.sdk.debug.activity.groupinfo.GroupInfoActivity" />
+        <activity android:name="im.sdk.debug.activity.groupinfo.CreateGroupActivity" />
+        <activity android:name="im.sdk.debug.activity.groupinfo.GetGroupInfoActivity" />
+        <activity android:name="im.sdk.debug.activity.imagecontent.ImageContentActivity" />
+        <activity android:name="im.sdk.debug.activity.conversation.ConversationActivity" />
+        <activity android:name="im.sdk.debug.activity.groupinfo.AddRemoveGroupMemberActivity" />
+        <activity android:name="im.sdk.debug.activity.groupinfo.UpdateGroupInfoActivity" />
+        <activity android:name="im.sdk.debug.activity.groupinfo.ExitGroupActivity" />
+        <activity android:name="im.sdk.debug.activity.groupinfo.GetLocalGroupMembersActivity" />
+        <activity android:name="im.sdk.debug.activity.createmessage.CreateGroupTextMsgActivity" />
+        <activity android:name="im.sdk.debug.activity.createmessage.CreateSigCustomMsgActivity" />
+        <activity android:name="im.sdk.debug.activity.createmessage.CreateSigImageMessageActivity" />
+        <activity android:name="im.sdk.debug.activity.createmessage.ShowMessageActivity" />
+        <activity android:name="im.sdk.debug.activity.createmessage.CreateGroupImageMsgActivity" />
+        <activity android:name="im.sdk.debug.activity.createmessage.CreateSigVoiceMsgActivity" />
+        <activity android:name="im.sdk.debug.activity.createmessage.ShowCustomMessageActivity" />
+        <activity android:name="im.sdk.debug.activity.createmessage.CreateGroupCustomMsgActivity" />
+        <activity android:name="im.sdk.debug.activity.createmessage.CreateGroupVoiceMsgActivity" />
+        <activity android:name="im.sdk.debug.activity.notify.NotifyTypeActivity" />
+        <activity android:name="im.sdk.debug.activity.setting.GetBlackListActivity" />
+        <activity android:name="im.sdk.debug.activity.setting.AddRemoveBlackListActivity" />
+        <activity android:name="im.sdk.debug.activity.setting.UpdateUserAvatar" />
+        <activity android:name="im.sdk.debug.activity.notify.ShowGroupNotificationActivity" />
+        <activity android:name="im.sdk.debug.activity.imagecontent.CreateImageContentAsyncFile" />
+        <activity android:name="im.sdk.debug.activity.imagecontent.ShowDownloadPathActivity" />
+        <activity android:name="im.sdk.debug.activity.imagecontent.CreateImageContentAsyncBitmap" />
+        <activity android:name="im.sdk.debug.activity.messagecontent.SetGetStringExtraActivity" />
+        <activity android:name="im.sdk.debug.activity.messagecontent.SetGetNumberExtraActivity" />
+        <activity android:name="im.sdk.debug.activity.messagecontent.SetGetBooleanExtraActivity" />
+        <activity android:name="im.sdk.debug.activity.messagecontent.SetGetExtraActivity" />
+        <activity android:name="im.sdk.debug.activity.conversation.GetConversationInfoActivity" />
+        <activity android:name="im.sdk.debug.activity.conversation.OrderMessageActivity" />
+        <activity android:name="im.sdk.debug.activity.conversation.IsShowNotifySigActivity" />
+        <activity android:name="im.sdk.debug.activity.conversation.DeleteConversationActivity" />
+        <activity android:name="im.sdk.debug.activity.setting.NoDisturbListActivity" />
+        <activity android:name="im.sdk.debug.activity.setting.ShowLogoutReasonActivity" />
+        <activity android:name="im.sdk.debug.activity.createmessage.CreateSendFileActivity" />
+        <activity android:name="im.sdk.debug.activity.friend.FriendContactManager" />
+        <activity android:name="im.sdk.debug.activity.friend.AddFriendActivity" />
+        <activity android:name="im.sdk.debug.activity.friend.ShowFriendReasonActivity" />
+        <activity android:name="im.sdk.debug.activity.createmessage.CreateLocationMessageActivity" />
+        <activity android:name="im.sdk.debug.activity.groupinfo.BlockedGroupMsgActivity" />
+        <activity android:name="im.sdk.debug.activity.createmessage.ShowDownloadVoiceInfoActivity" />
+        <activity android:name="im.sdk.debug.activity.showinfo.ShowMyInfoUpdateActivity" />
+        <activity android:name="im.sdk.debug.activity.conversation.RetractMessageActivity" />
+
+
+        <activity
+            android:name="cn.jmessage.android.uikit.DemoActivity"
+            android:label="@string/app_name"
+            android:theme="@style/noTitle">
+        </activity>
+        <activity android:name="cn.jmessage.android.uikit.chatting.BaseActivity"/>
+        <activity android:name="cn.jmessage.android.uikit.AboutActivity"
+            android:theme="@style/noTitle"/>
+        <activity android:name="cn.jmessage.android.uikit.chatting.ChatActivity"
+            android:theme="@style/noTitle"
+            android:windowSoftInputMode="adjustResize"/>
+    </application>
+
+</manifest>
