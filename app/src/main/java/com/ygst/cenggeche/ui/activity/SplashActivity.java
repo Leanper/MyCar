@@ -68,8 +68,7 @@ public class SplashActivity extends BaseActivity {
     }
 
     public void btnMain(View view){
-
-        CommonUtils.startActivity(this,MainActivity.class);
+        initData();
     }
     public void btnJChat(View view){
 
