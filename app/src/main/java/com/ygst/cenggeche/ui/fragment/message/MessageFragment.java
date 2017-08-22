@@ -11,8 +11,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
-import android.widget.TextView;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.blankj.utilcode.utils.LogUtils;
 import com.ygst.cenggeche.R;
@@ -43,10 +43,41 @@ public class MessageFragment extends MVPBaseFragment<MessageContract.View, Messa
     private View mRootView;
     List<Conversation> mListConversation;
 
-    //    private List<ApplicationInfo> mAppList;
-    private AppAdapter mAdapter;
+    private SwipeMenuListViewAdapter mSwipeMenuListViewAdapter;
     private SwipeMenuListView mListView;
-    private String mTargetId = "18601995150";
+    // step 1. create a MenuCreator
+    SwipeMenuCreator creator = new SwipeMenuCreator() {
+        @Override
+        public void create(SwipeMenu menu) {
+            //添加了一个Open侧滑按钮
+            SwipeMenuItem openItem = new SwipeMenuItem(getActivity().getApplicationContext());
+            // set item background
+            openItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
+                    0xCE)));
+            // set item width
+            openItem.setWidth(dp2px(90));
+            // set item title
+            openItem.setTitle("Open");
+            // set item title fontsize
+            openItem.setTitleSize(18);
+            // set item title font color
+            openItem.setTitleColor(Color.WHITE);
+            // add to menu
+            menu.addMenuItem(openItem);
+
+            // 创建delete侧滑按钮
+            SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity().getApplicationContext());
+            // set item background
+            deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
+                    0x3F, 0x25)));
+            // set item width
+            deleteItem.setWidth(dp2px(90));
+            // set a icon
+            deleteItem.setIcon(R.drawable.ic_delete);
+            // add to menu
+            menu.addMenuItem(deleteItem);
+        }
+    };
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         LogUtils.i(TAG, "------------onCreate");
@@ -66,57 +97,35 @@ public class MessageFragment extends MVPBaseFragment<MessageContract.View, Messa
         return mRootView;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        LogUtils.i(TAG, "------------onResume");
+        initDate();
+    }
+
+    private EditText mEditTextTargetId;
+    private Button mBtnGotoChatting;
 
     private void initView() {
 
-        mListConversation = JMessageClient.getConversationList();
-        mListView = (SwipeMenuListView) mRootView.findViewById(R.id.listView);
-        mAdapter = new AppAdapter();
-        if (mListConversation != null) {
-            mListView.setAdapter(mAdapter);
-        }
-
-        // step 1. create a MenuCreator
-        SwipeMenuCreator creator = new SwipeMenuCreator() {
-
+        mEditTextTargetId = (EditText) mRootView.findViewById(R.id.et_target_id);
+        mBtnGotoChatting = (Button) mRootView.findViewById(R.id.btn_goto_chatting);
+        mBtnGotoChatting.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void create(SwipeMenu menu) {
-                // create "open" item
-                SwipeMenuItem openItem = new SwipeMenuItem(getActivity().getApplicationContext());
-                // set item background
-                openItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
-                        0xCE)));
-                // set item width
-                openItem.setWidth(dp2px(90));
-                // set item title
-                openItem.setTitle("Open");
-                // set item title fontsize
-                openItem.setTitleSize(18);
-                // set item title font color
-                openItem.setTitleColor(Color.WHITE);
-                // add to menu
-                menu.addMenuItem(openItem);
-
-                // create "delete" item
-                SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity().getApplicationContext());
-                // set item background
-                deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
-                        0x3F, 0x25)));
-                // set item width
-                deleteItem.setWidth(dp2px(90));
-                // set a icon
-                deleteItem.setIcon(R.drawable.ic_delete);
-                // add to menu
-                menu.addMenuItem(deleteItem);
+            public void onClick(View v) {
+                final Intent intent = new Intent();
+                intent.putExtra(JChatUtils.TARGET_ID_KEY, mEditTextTargetId.getText().toString());
+                intent.setClass(mContext, ChatActivity.class);
+                startActivity(intent);
             }
-        };
+        });
+
+        mListView = (SwipeMenuListView) mRootView.findViewById(R.id.listView);
         // set creator
         mListView.setMenuCreator(creator);
-
-
-        // set SwipeListener
+        // 滑动某一个Item
         mListView.setOnSwipeListener(new SwipeMenuListView.OnSwipeListener() {
-
             @Override
             public void onSwipeStart(int position) {
                 // swipe start
@@ -129,7 +138,7 @@ public class MessageFragment extends MVPBaseFragment<MessageContract.View, Messa
                 LogUtils.i(TAG, "swipe start");
             }
         });
-        // 左滑某一个Item
+        //点击侧滑出来的菜单按钮
         mListView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
             @Override
             public void onMenuItemClick(int position, SwipeMenu menu, int index) {
@@ -140,8 +149,8 @@ public class MessageFragment extends MVPBaseFragment<MessageContract.View, Messa
                         open(item);
                         break;
                     case 1:
-                        // delete删除某个联系人会话
-                        delete(item,position);
+                        // delete删除某个会话
+                        mPresenter.deleteConversation(item, position);
                         break;
                 }
             }
@@ -150,20 +159,24 @@ public class MessageFragment extends MVPBaseFragment<MessageContract.View, Messa
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final Intent intent = new Intent();
                 Conversation conversation = mListConversation.get(position);
-                if (conversation.getType().toString().equals("single")) {
-                    intent.putExtra(JChatUtils.TARGET_ID_KEY, conversation.getId());
+                final Intent intent = new Intent();
+
+                if (conversation.getType().toString().equals(JChatUtils.CONVERSATION_TYPE_SINGLE)){
+                    String targetId = ((UserInfo) conversation.getTargetInfo()).getUserName();
+                    intent.putExtra(JChatUtils.TARGET_ID_KEY, targetId);
+                    intent.putExtra(JChatUtils.TARGET_APP_KEY, conversation.getTargetAppKey());
                     intent.setClass(mContext, ChatActivity.class);
                     startActivity(intent);
-                } else if (conversation.getType().toString().equals("group")) {
-                    intent.putExtra(JChatUtils.GROUP_ID_KEY, conversation.getId());
+                } else{
+                    long groupId = ((GroupInfo) conversation.getTargetInfo()).getGroupID();
+                    intent.putExtra(JChatUtils.GROUP_ID_KEY, groupId);
                     intent.setClass(mContext, ChatActivity.class);
                     startActivity(intent);
                 }
+
             }
         });
-
         // 长按某一个Item
         mListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
@@ -174,76 +187,37 @@ public class MessageFragment extends MVPBaseFragment<MessageContract.View, Messa
                 return false;
             }
         });
-
-    }
-
-    /**
-     * 删除会话
-     * @param conversation
-     * @param position
-     */
-    private void delete(Conversation conversation,int position) {
-        Boolean deleteBoolean = JMessageClient.deleteSingleConversation(conversation.getId(), "");
-        if(deleteBoolean){
-            mListConversation.remove(position);
-            mAdapter.notifyDataSetChanged();
-        }else{
-            ToastUtil.show(getActivity(),"删除会话失败");
-        }
     }
 
     private void open(Conversation item) {
+
     }
 
-    class AppAdapter extends BaseAdapter {
-
-        @Override
-        public int getCount() {
-            return mListConversation.size();
+    @Override
+    public void getDeleteConversationSuccess(String type, int position) {
+        mListConversation.remove(position);
+        mSwipeMenuListViewAdapter.notifyDataSetChanged();
+        if (type.equals(JChatUtils.CONVERSATION_TYPE_SINGLE)) {
+            ToastUtil.show(getActivity(), "删除单聊会话成功");
+        } else {
+            ToastUtil.show(getActivity(), "删除群聊会话成功");
         }
+    }
 
-        @Override
-        public Conversation getItem(int position) {
-            return mListConversation.get(position);
+    private void initDate(){
+        mListConversation = JMessageClient.getConversationList();
+        mSwipeMenuListViewAdapter = new SwipeMenuListViewAdapter(getActivity(),mListConversation);
+        if (mListConversation != null) {
+            mListView.setAdapter(mSwipeMenuListViewAdapter);
         }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
+        if(mSwipeMenuListViewAdapter!=null){
+            mSwipeMenuListViewAdapter.notifyDataSetChanged();
         }
+    }
 
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = View.inflate(getActivity().getApplicationContext(),
-                        R.layout.item_list_app, null);
-                new AppAdapter.ViewHolder(convertView);
-            }
-            AppAdapter.ViewHolder holder = (AppAdapter.ViewHolder) convertView.getTag();
-            Conversation item = getItem(position);
-            if (item.getType().toString().equals("single")) {
-                UserInfo userInfo = (UserInfo) item.getTargetInfo();
-                holder.tv_type.setText("单人");
-                holder.tv_name.setText(userInfo.getUserName());
-            }
-            if (item.getType().toString().equals("group")) {
-                GroupInfo groupInfo = (GroupInfo) item.getTargetInfo();
-                holder.tv_type.setText("群组");
-                holder.tv_name.setText("群组id:" + groupInfo.getGroupID());
-            }
-            return convertView;
-        }
-
-        class ViewHolder {
-            TextView tv_type;
-            TextView tv_name;
-
-            public ViewHolder(View view) {
-                tv_type = (TextView) view.findViewById(R.id.tv_type);
-                tv_name = (TextView) view.findViewById(R.id.tv_name);
-                view.setTag(this);
-            }
-        }
+    @Override
+    public void getDeleteConversationError() {
+        ToastUtil.show(getActivity(), "删除会话失败");
     }
 
     private int dp2px(int dp) {

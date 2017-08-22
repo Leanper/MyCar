@@ -1,9 +1,9 @@
 package com.ygst.cenggeche.ui.fragment.message;
 
-import android.content.Context;
-
 import com.ygst.cenggeche.mvp.BasePresenter;
 import com.ygst.cenggeche.mvp.BaseView;
+
+import cn.jpush.im.android.api.model.Conversation;
 
 /**
  * MVPPlugin
@@ -12,10 +12,14 @@ import com.ygst.cenggeche.mvp.BaseView;
 
 public class MessageContract {
     interface View extends BaseView {
-        
+
+        void getDeleteConversationSuccess(String type,int position);
+
+        void getDeleteConversationError();
     }
 
     interface  Presenter extends BasePresenter<View> {
-        
+
+       void deleteConversation(Conversation conversation, int position);
     }
 }
