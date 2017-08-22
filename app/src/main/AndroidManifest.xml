@@ -15,7 +15,6 @@
     <uses-permission android:name="android.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
-
     <!-- Optional. Required for location feature -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
@@ -121,16 +120,23 @@
 
 
         <activity
+            android:name="cn.jmessage.android.uikit.multiselectphotos.DemoActivity"
+            android:theme="@android:style/Theme.NoTitleBar"></activity>
+        <activity android:name="cn.jmessage.android.uikit.multiselectphotos.AlbumListActivity" />
+        <activity android:name="cn.jmessage.android.uikit.multiselectphotos.BrowserViewPagerActivity" />
+        <activity android:name="cn.jmessage.android.uikit.multiselectphotos.PickPictureActivity" />
+        <activity
             android:name="cn.jmessage.android.uikit.DemoActivity"
             android:label="@string/app_name"
-            android:theme="@style/noTitle">
-        </activity>
-        <activity android:name="cn.jmessage.android.uikit.chatting.BaseActivity"/>
-        <activity android:name="cn.jmessage.android.uikit.AboutActivity"
-            android:theme="@style/noTitle"/>
-        <activity android:name="cn.jmessage.android.uikit.chatting.ChatActivity"
+            android:theme="@style/noTitle"></activity>
+        <activity android:name="cn.jmessage.android.uikit.chatting.BaseActivity" />
+        <activity
+            android:name="cn.jmessage.android.uikit.AboutActivity"
+            android:theme="@style/noTitle" />
+        <activity
+            android:name="cn.jmessage.android.uikit.chatting.ChatActivity"
             android:theme="@style/noTitle"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>
