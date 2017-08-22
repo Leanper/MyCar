@@ -1,9 +1,9 @@
 package com.ygst.cenggeche.ui.fragment.message;
 
 import com.ygst.cenggeche.mvp.BasePresenterImpl;
-import com.ygst.cenggeche.utils.JChatUtils;
 
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.enums.ConversationType;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.GroupInfo;
 import cn.jpush.im.android.api.model.UserInfo;
@@ -18,7 +18,7 @@ public class MessagePresenter extends BasePresenterImpl<MessageContract.View> im
     @Override
     public void deleteConversation(Conversation conversation, int position) {
         Boolean deleteBoolean;
-        if (conversation.getType().toString().equals(JChatUtils.CONVERSATION_TYPE_SINGLE)){
+        if (conversation.getType().equals(ConversationType.single)){
             String targetId = ((UserInfo) conversation.getTargetInfo()).getUserName();
             deleteBoolean = JMessageClient.deleteSingleConversation(targetId, conversation.getTargetAppKey());
             if (deleteBoolean) {

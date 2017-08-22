@@ -1,17 +1,28 @@
 package com.ygst.cenggeche.ui.fragment.message;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.blankj.utilcode.utils.LogUtils;
 import com.ygst.cenggeche.R;
 
 import java.util.List;
 
+import cn.jmessage.android.uikit.chatting.utils.TimeFormat;
+import cn.jpush.im.android.api.callback.GetAvatarBitmapCallback;
+import cn.jpush.im.android.api.content.CustomContent;
+import cn.jpush.im.android.api.content.PromptContent;
+import cn.jpush.im.android.api.content.TextContent;
+import cn.jpush.im.android.api.enums.ConversationType;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.GroupInfo;
+import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.model.UserInfo;
 
 /**
@@ -22,7 +33,8 @@ public class SwipeMenuListViewAdapter extends BaseAdapter {
 
     List<Conversation> mListConversation;
     Context mContext;
-
+    String lastTime;
+    ViewHolder holder;
     public SwipeMenuListViewAdapter(Context context, List<Conversation> list) {
         mContext = context;
         this.mListConversation = list;
@@ -47,31 +59,120 @@ public class SwipeMenuListViewAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         if (convertView == null) {
             convertView = View.inflate(mContext.getApplicationContext(),
-                    R.layout.item_list_app, null);
+                    R.layout.item_list_conversation, null);
             new ViewHolder(convertView);
         }
-        ViewHolder holder = (ViewHolder) convertView.getTag();
-        Conversation item = mListConversation.get(position);
-        if (item.getType().toString().equals("single")) {
-            UserInfo userInfo = (UserInfo) item.getTargetInfo();
-            holder.tv_type.setText("单人");
-            holder.tv_name.setText(userInfo.getUserName());
-        }
-        if (item.getType().toString().equals("group")) {
-            GroupInfo groupInfo = (GroupInfo) item.getTargetInfo();
-            holder.tv_type.setText("群组");
-            holder.tv_name.setText("群组id:" + groupInfo.getGroupID());
+         holder = (ViewHolder) convertView.getTag();
+
+        Conversation convItem = mListConversation.get(position);
+        Message lastMsg = convItem.getLatestMessage();
+         String contentStr = getLastMag(lastMsg);
+
+//        String contentStr = ((TextContent) lastMsg.getContent()).getText();
+
+        UserInfo userInfo = (UserInfo) convItem.getTargetInfo();
+        LogUtils.i("SwipeMenuListViewAdapter","会话名称："+convItem.getTitle());
+        //获取头像
+        setHeadIcon(convItem);
+        //会话的名称
+        holder.mTVtargetName.setText(convItem.getTitle());
+        holder.mTVlatestMessage.setText(contentStr);
+        //会话界面时间
+        holder.mTVlastTime.setText(lastTime);
+        if (convItem.getType().equals(ConversationType.single)) {
+
+        } else {
+            GroupInfo groupInfo = (GroupInfo) convItem.getTargetInfo();
         }
         return convertView;
     }
 
+
+    private String getLastMag(Message lastMsg) {
+        String contentStr = "";
+        if (lastMsg != null) {
+            TimeFormat timeFormat = new TimeFormat(mContext, lastMsg.getCreateTime());
+            lastTime = timeFormat.getTime();
+            switch (lastMsg.getContentType()) {
+                case image:
+                    contentStr = mContext.getString(R.string.type_picture);
+                    break;
+                case voice:
+                    contentStr = mContext.getString(R.string.type_voice);
+                    break;
+                case location:
+                    contentStr = mContext.getString(R.string.type_location);
+                    break;
+                case file:
+                    String extra = lastMsg.getContent().getStringExtra("video");
+                    if (!TextUtils.isEmpty(extra)) {
+                        contentStr = mContext.getString(R.string.type_smallvideo);
+                    } else {
+                        contentStr = mContext.getString(R.string.type_file);
+                    }
+                    break;
+                case video:
+                    contentStr = mContext.getString(R.string.type_video);
+                    break;
+                case eventNotification:
+                    contentStr = mContext.getString(R.string.group_notification);
+                    break;
+                case custom:
+                    CustomContent customContent = (CustomContent) lastMsg.getContent();
+                    Boolean isBlackListHint = customContent.getBooleanValue("blackList");
+                    if (isBlackListHint != null && isBlackListHint) {
+                        contentStr = mContext.getString(R.string.jmui_server_803008);
+                    } else {
+                        contentStr = mContext.getString(R.string.type_custom);
+                    }
+                    break;
+                case prompt:
+                    contentStr = ((PromptContent) lastMsg.getContent()).getPromptText();
+                    break;
+                default:
+                    contentStr = ((TextContent) lastMsg.getContent()).getText();
+            }
+
+        }
+        return contentStr;
+    }
+
+    private void setHeadIcon(Conversation convItem){
+        if (convItem.getType().equals(ConversationType.single)) {
+            UserInfo mUserInfo = (UserInfo) convItem.getTargetInfo();
+            if (mUserInfo != null) {
+                mUserInfo.getAvatarBitmap(new GetAvatarBitmapCallback() {
+                    @Override
+                    public void gotResult(int status, String desc, Bitmap bitmap) {
+                        if (status == 0) {
+                            holder.mIVavatar.setImageBitmap(bitmap);
+                        } else {
+                            holder.mIVavatar.setImageResource(R.drawable.jmui_head_icon);
+                        }
+                    }
+                });
+            } else {
+                holder.mIVavatar.setImageResource(R.drawable.jmui_head_icon);
+            }
+        } else {
+            GroupInfo mGroupInfo = (GroupInfo) convItem.getTargetInfo();
+            holder.mIVavatar.setImageResource(R.drawable.group);
+        }
+
+    }
+
     class ViewHolder {
-        TextView tv_type;
-        TextView tv_name;
+
+        ImageView mIVavatar;
+        TextView mTVtargetName;
+        TextView mTVlatestMessage;
+        TextView mTVlastTime;
 
         public ViewHolder(View view) {
-            tv_type = (TextView) view.findViewById(R.id.tv_type);
-            tv_name = (TextView) view.findViewById(R.id.tv_name);
+            mIVavatar = (ImageView) view.findViewById(R.id.iv_avatar);
+            mTVtargetName = (TextView) view.findViewById(R.id.tv_target_name);
+            mTVlatestMessage = (TextView) view.findViewById(R.id.tv_latest_message);
+            mTVlastTime = (TextView) view.findViewById(R.id.tv_last_time);
             view.setTag(this);
         }
     }

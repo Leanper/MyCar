@@ -29,6 +29,7 @@ import java.util.List;
 import butterknife.ButterKnife;
 import cn.jmessage.android.uikit.chatting.ChatActivity;
 import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.android.api.enums.ConversationType;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.GroupInfo;
 import cn.jpush.im.android.api.model.UserInfo;
@@ -162,7 +163,7 @@ public class MessageFragment extends MVPBaseFragment<MessageContract.View, Messa
                 Conversation conversation = mListConversation.get(position);
                 final Intent intent = new Intent();
 
-                if (conversation.getType().toString().equals(JChatUtils.CONVERSATION_TYPE_SINGLE)){
+                if (conversation.getType().equals(ConversationType.single)){
                     String targetId = ((UserInfo) conversation.getTargetInfo()).getUserName();
                     intent.putExtra(JChatUtils.TARGET_ID_KEY, targetId);
                     intent.putExtra(JChatUtils.TARGET_APP_KEY, conversation.getTargetAppKey());
@@ -197,7 +198,7 @@ public class MessageFragment extends MVPBaseFragment<MessageContract.View, Messa
     public void getDeleteConversationSuccess(String type, int position) {
         mListConversation.remove(position);
         mSwipeMenuListViewAdapter.notifyDataSetChanged();
-        if (type.equals(JChatUtils.CONVERSATION_TYPE_SINGLE)) {
+        if (type.equals(ConversationType.single)) {
             ToastUtil.show(getActivity(), "删除单聊会话成功");
         } else {
             ToastUtil.show(getActivity(), "删除群聊会话成功");
