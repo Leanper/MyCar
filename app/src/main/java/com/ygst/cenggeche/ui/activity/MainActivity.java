@@ -19,16 +19,16 @@ import android.widget.Toast;
 import com.ygst.cenggeche.R;
 import com.ygst.cenggeche.ui.activity.addfriend.AddFriendActivity;
 import com.ygst.cenggeche.ui.activity.base.BaseActivity;
-import com.ygst.cenggeche.ui.fragment.FirstFragment;
-import com.ygst.cenggeche.ui.fragment.SanFragment;
+import com.ygst.cenggeche.ui.activity.friendlist.FriendListActivity;
+import com.ygst.cenggeche.ui.fragment.cengche.CengCheFragment;
+import com.ygst.cenggeche.ui.fragment.finding.FindingFragment;
+import com.ygst.cenggeche.ui.fragment.me.MeFragment;
 import com.ygst.cenggeche.ui.fragment.message.MessageFragment;
-import com.ygst.cenggeche.ui.test.ContactsActivity;
 import com.ygst.cenggeche.utils.ToastUtil;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -56,7 +56,6 @@ import cn.jpush.im.android.api.event.OfflineMessageEvent;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.Message;
 import cn.jpush.im.android.api.model.UserInfo;
-import im.sdk.debug.activity.TypeActivity;
 import im.sdk.debug.activity.createmessage.CreateGroupTextMsgActivity;
 import im.sdk.debug.activity.createmessage.CreateSigTextMessageActivity;
 import im.sdk.debug.activity.createmessage.ShowCustomMessageActivity;
@@ -71,9 +70,10 @@ import im.sdk.debug.activity.showinfo.ShowMyInfoUpdateActivity;
 public class MainActivity extends BaseActivity{
     private String TAG = "MainActivity";
     private TextView mTextMessage;
+    private CengCheFragment mCengCheFragment;
+    private FindingFragment mFindingFragment;
     private MessageFragment mMsgFragment;
-    private FirstFragment mFirstFragment;
-    private SanFragment mSanFragment;
+    private MeFragment mMeFragment;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
@@ -96,7 +96,7 @@ public class MainActivity extends BaseActivity{
     @OnClick(R.id.iv_title_menu_right)
     public void titleMenuRight(){
         Intent intent = new Intent();
-        intent.setClass(this, ContactsActivity.class);
+        intent.setClass(this, FriendListActivity.class);
         startActivity(intent);
     }
 
@@ -108,17 +108,26 @@ public class MainActivity extends BaseActivity{
             FragmentTransaction transaction = fm.beginTransaction();
 
             switch (item.getItemId()) {
-                case R.id.navigation_home:
-                    doubleClick(R.id.navigation_home);
-                    mToolbar.setVisibility(View.GONE);
-                    if (mFirstFragment == null) {
-                        mFirstFragment = new FirstFragment();
+                case R.id.navigation_cengche:
+                    doubleClick(R.id.navigation_cengche);
+                    mToolbar.setVisibility(View.VISIBLE);
+                    if (mCengCheFragment == null) {
+                        mCengCheFragment = new CengCheFragment();
                     }
                     // 使用当前Fragment的布局替代content的控件
-                    transaction.replace(R.id.content, mFirstFragment);
+                    transaction.replace(R.id.content, mCengCheFragment);
                     break;
-                case R.id.navigation_dashboard:
-                    doubleClick(R.id.navigation_dashboard);
+                case R.id.navigation_finding:
+                    doubleClick(R.id.navigation_finding);
+                    mToolbar.setVisibility(View.VISIBLE);
+                    if (mCengCheFragment == null) {
+                        mCengCheFragment = new CengCheFragment();
+                    }
+                    // 使用当前Fragment的布局替代content的控件
+                    transaction.replace(R.id.content, mCengCheFragment);
+                    break;
+                case R.id.navigation_message:
+                    doubleClick(R.id.navigation_message);
                     mToolbar.setVisibility(View.VISIBLE);
                     mRLayoutMainTitle.setVisibility(View.VISIBLE);
                     mImageViewTitleMenuLeft.setVisibility(View.VISIBLE);
@@ -129,15 +138,13 @@ public class MainActivity extends BaseActivity{
                     }
                     transaction.replace(R.id.content, mMsgFragment);
                     break;
-                case R.id.navigation_notifications:
-                    doubleClick(R.id.navigation_notifications);
-                    mTextViewTitle.setText("我");
-                    mImageViewTitleMenuLeft.setVisibility(View.GONE);
-                    mImageViewTitleMenuRight.setVisibility(View.GONE);
-                    if (mSanFragment == null) {
-                        mSanFragment = new SanFragment();
+                case R.id.navigation_me:
+                    doubleClick(R.id.navigation_me);
+                    mToolbar.setVisibility(View.GONE);
+                    if (mMeFragment == null) {
+                        mMeFragment = new MeFragment();
                     }
-                    transaction.replace(R.id.content, mSanFragment);
+                    transaction.replace(R.id.content, mMeFragment);
                     break;
             }
             // 事务提交
@@ -158,13 +165,16 @@ public class MainActivity extends BaseActivity{
         if (mHits[mHits.length - 1] - mHits[0] < 500) { //间隔时间设置为500毫秒
             /**双击的业务逻辑*/
             switch (itemId) {
-                case R.id.navigation_home:
+                case R.id.navigation_cengche:
                     ToastUtil.show(this, "蹭车双击");
                     break;
-                case R.id.navigation_dashboard:
+                case R.id.navigation_finding:
+                    ToastUtil.show(this, "发现双击");
+                    break;
+                case R.id.navigation_message:
                     ToastUtil.show(this, "消息双击");
                     break;
-                case R.id.navigation_notifications:
+                case R.id.navigation_me:
                     ToastUtil.show(this, "我的双击");
                     break;
             }
@@ -215,8 +225,8 @@ public class MainActivity extends BaseActivity{
         mToolbar.setVisibility(View.GONE);
         FragmentManager fm = getFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
-        mFirstFragment = new FirstFragment();
-        transaction.replace(R.id.content, mFirstFragment);
+        mCengCheFragment = new CengCheFragment();
+        transaction.replace(R.id.content, mCengCheFragment);
         transaction.commit();
     }
 
