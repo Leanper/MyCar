@@ -58,7 +58,7 @@ public class MessageFragment extends MVPBaseFragment<MessageContract.View, Messa
             // set item width
             openItem.setWidth(dp2px(90));
             // set item title
-            openItem.setTitle("Open");
+            openItem.setTitle("置顶");
             // set item title fontsize
             openItem.setTitleSize(18);
             // set item title font color
