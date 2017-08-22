@@ -1,4 +1,4 @@
-package com.ygst.cenggeche.ui.test;
+package com.ygst.cenggeche.ui.activity.friendlist;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ygst.cenggeche.R;
-import com.ygst.cenggeche.bean.BaseBean;
+import com.ygst.cenggeche.bean.FriendBean;
 import com.ygst.cenggeche.ui.widget.ColorGenerator;
 import com.ygst.cenggeche.ui.widget.TextDrawable;
 
@@ -22,7 +22,7 @@ import java.util.List;
 
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyRecycleHolder> {
 
-    private List<BaseBean> contactBeanList;
+    private List<FriendBean> contactBeanList;
     private Context mContext;
     // declare the color generator and drawable builder
     private ColorGenerator mColorGenerator = ColorGenerator.MATERIAL;
@@ -33,7 +33,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyRecycl
         contactBeanList = new ArrayList<>();
     }
 
-    public void addAll(List<BaseBean> beans) {
+    public void addAll(List<FriendBean> beans) {
         if (contactBeanList.size() > 0) {
             contactBeanList.clear();
         }
@@ -41,12 +41,12 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyRecycl
         notifyDataSetChanged();
     }
 
-    public void add(BaseBean bean, int position) {
+    public void add(FriendBean bean, int position) {
         contactBeanList.add(position, bean);
         notifyItemInserted(position);
     }
 
-    public void add(BaseBean bean) {
+    public void add(FriendBean bean) {
         contactBeanList.add(bean);
         notifyItemChanged(contactBeanList.size() - 1);
     }
@@ -61,7 +61,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.MyRecycl
     public void onBindViewHolder(MyRecycleHolder holder, int position) {
         if (contactBeanList == null || contactBeanList.size() == 0 || contactBeanList.size() <= position)
             return;
-        BaseBean bean = contactBeanList.get(position);
+        FriendBean bean = contactBeanList.get(position);
         if (bean != null) {
             holder.tv_name.setText(bean.getName());
             TextDrawable drawable = mDrawableBuilder.build(String.valueOf(bean.getName().charAt(0)), mColorGenerator.getColor(bean.getName()));

@@ -53,8 +53,8 @@
         <!--添加好友-->
         <activity android:name=".ui.activity.addfriend.AddFriendActivity" />
 
-        <!--联系人列表（测试）-->
-        <activity android:name=".ui.test.ContactsActivity" />
+        <!--联系人列表-->
+        <activity android:name=".ui.activity.friendlist.FriendListActivity" />
 
 
         <!--下面是极光IM功能展示界面-->
