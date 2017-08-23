@@ -1,5 +1,6 @@
 package cn.jmessage.android.uikit.chatting;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
@@ -9,12 +10,16 @@ import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -25,6 +30,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.ygst.cenggeche.utils.JChatUtils;
+import com.ygst.cenggeche.utils.ToastUtil;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -36,6 +42,7 @@ import cn.jmessage.android.uikit.chatting.utils.Event;
 import cn.jmessage.android.uikit.chatting.utils.FileHelper;
 import cn.jmessage.android.uikit.chatting.utils.IdHelper;
 import cn.jmessage.android.uikit.chatting.utils.SharePreferenceManager;
+import cn.jmessage.android.uikit.multiselectphotos.DemoActivity;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.GetGroupInfoCallback;
 import cn.jpush.im.android.api.content.EventNotificationContent;
@@ -74,6 +81,14 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
     private static final int REFRESH_CHAT_TITLE = 0x1024;
     private static final int REFRESH_GROUP_NAME = 0x1025;
     private static final int REFRESH_GROUP_NUM = 0x1026;
+
+    //录音权限
+    String[] permission_record_audio = {"android.permission.RECORD_AUDIO"};
+    private static final int REQUEST_PERMISSION_RECORD_AUDIO = 1001;
+    //读取存储器和相机权限
+    String[] permission_read_camera = {"android.permission.READ_EXTERNAL_STORAGE", "android.permission.CAMERA"};
+    private static final int REQUEST_PERMISSION_READ_CAMERA = 1002;
+
 
     private final UIHandler mUIHandler = new UIHandler(this);
     private boolean mIsSingle = true;
@@ -117,18 +132,18 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
             mIsSingle = true;
             mConv = JMessageClient.getSingleConversation(mTargetId, mTargetAppKey);
             if (mConv != null) {
-                UserInfo userInfo = (UserInfo)mConv.getTargetInfo();
+                UserInfo userInfo = (UserInfo) mConv.getTargetInfo();
                 if (TextUtils.isEmpty(userInfo.getNickname())) {
                     mChatView.setChatTitle(userInfo.getUserName());
-                }else {
+                } else {
                     mChatView.setChatTitle(userInfo.getNickname());
                 }
             } else {
                 mConv = Conversation.createSingleConversation(mTargetId, mTargetAppKey);
-                UserInfo userInfo = (UserInfo)mConv.getTargetInfo();
+                UserInfo userInfo = (UserInfo) mConv.getTargetInfo();
                 if (TextUtils.isEmpty(userInfo.getNickname())) {
                     mChatView.setChatTitle(userInfo.getUserName());
-                }else {
+                } else {
                     mChatView.setChatTitle(userInfo.getNickname());
                 }
             }
@@ -226,17 +241,22 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
                 mChatView.isKeyBoard();
                 showSoftInputAndDismissMenu();
             } else {
-                //否则切换到语音输入
-                mChatView.notKeyBoard(mConv, mChatAdapter, mChatView);
-                if (mShowSoftInput) {
-                    if (mImm != null) {
-                        mImm.hideSoftInputFromWindow(mChatView.getInputView().getWindowToken(), 0); //强制隐藏键盘
-                        mShowSoftInput = false;
+                //开启权限
+                if (ContextCompat.checkSelfPermission(this, permission_record_audio[0]) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(this, permission_record_audio, REQUEST_PERMISSION_RECORD_AUDIO);
+                } else {
+                    //否则切换到语音输入
+                    mChatView.notKeyBoard(mConv, mChatAdapter, mChatView);
+                    if (mShowSoftInput) {
+                        if (mImm != null) {
+                            mImm.hideSoftInputFromWindow(mChatView.getInputView().getWindowToken(), 0); //强制隐藏键盘
+                            mShowSoftInput = false;
+                        }
+                    } else if (mChatView.getMoreMenu().getVisibility() == View.VISIBLE) {
+                        mChatView.dismissMoreMenu();
                     }
-                } else if (mChatView.getMoreMenu().getVisibility() == View.VISIBLE) {
-                    mChatView.dismissMoreMenu();
+                    Log.i(TAG, "setConversation success");
                 }
-                Log.i(TAG, "setConversation success");
             }
             // 发送文本消息
         } else if (v.getId() == IdHelper.getViewID(mContext, "jmui_send_msg_btn")) {
@@ -268,27 +288,37 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
                 }
             }
         } else if (v.getId() == IdHelper.getViewID(mContext, "jmui_pick_from_camera_btn")) {
-            takePhoto();
-            if (mChatView.getMoreMenu().getVisibility() == View.VISIBLE) {
-                mChatView.dismissMoreMenu();
-            }
-        } else if (v.getId() == IdHelper.getViewID(mContext, "jmui_pick_from_local_btn")){
-            if (mChatView.getMoreMenu().getVisibility() == View.VISIBLE) {
-                mChatView.dismissMoreMenu();
-            }
-            Intent intent = new Intent();
-            if (mIsSingle) {
-                intent.putExtra(JChatUtils.TARGET_ID_KEY, mTargetId);
-                intent.putExtra(TARGET_APP_KEY, mTargetAppKey);
+            //开启读取文件，相机权限
+            if (ContextCompat.checkSelfPermission(this, permission_read_camera[0]) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, permission_read_camera, REQUEST_PERMISSION_READ_CAMERA);
             } else {
-                intent.putExtra(JChatUtils.GROUP_ID_KEY, mGroupId);
+                takePhoto();
+                if (mChatView.getMoreMenu().getVisibility() == View.VISIBLE) {
+                    mChatView.dismissMoreMenu();
+                }
             }
+        } else if (v.getId() == IdHelper.getViewID(mContext, "jmui_pick_from_local_btn")) {
+            //开启读取文件，相机权限
+            if (ContextCompat.checkSelfPermission(this, permission_read_camera[0]) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, permission_read_camera, REQUEST_PERMISSION_READ_CAMERA);
+            } else {
+                if (mChatView.getMoreMenu().getVisibility() == View.VISIBLE) {
+                    mChatView.dismissMoreMenu();
+                }
+                Intent intent = new Intent();
+                if (mIsSingle) {
+                    intent.putExtra(JChatUtils.TARGET_ID_KEY, mTargetId);
+                    intent.putExtra(TARGET_APP_KEY, mTargetAppKey);
+                } else {
+                    intent.putExtra(JChatUtils.GROUP_ID_KEY, mGroupId);
+                }
 //            if (!FileHelper.isSdCardExist()) {
 //                Toast.makeText(this, IdHelper.getString(mContext, "sdcard_not_exist_toast"), Toast.LENGTH_SHORT).show();
 //            } else {
 //                intent.setClass(this, PickPictureTotalActivity.class);
 //                startActivityForResult(intent, REQUEST_CODE_SELECT_PICTURE);
 //            }
+            }
         }
     }
 
@@ -398,6 +428,33 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
         super.onResume();
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_PERMISSION_RECORD_AUDIO:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // 权限被用户同意，可以去放肆了
+                    ToastUtil.show(this, "拥有录音功能啦，快去试试录音吧。");
+                } else {
+                    // 权限被用户拒绝了，洗洗睡吧。
+                    ToastUtil.show(this, "还没有录音功能，请去设置中开启。");
+                }
+                break;
+            case REQUEST_PERMISSION_READ_CAMERA:
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // 权限被用户同意，可以去放肆了
+                    ToastUtil.show(this, "拥有发照片功能啦，快去发照片吧。");
+                } else {
+                    // 权限被用户拒绝了，洗洗睡吧。
+                    ToastUtil.show(this, "还没有查看照片功能，请去设置中开启。");
+                }
+                break;
+        }
+    }
+
     /**
      * 用于处理拍照发送图片返回结果以及从其他界面回来后刷新聊天标题
      * 或者聊天消息
@@ -428,7 +485,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
                         }
                     }
                 });
-            }  catch (NullPointerException e) {
+            } catch (NullPointerException e) {
                 Log.i(TAG, "onActivityResult unexpected result");
             }
         } else if (resultCode == RESULT_CODE_SELECT_PICTURE) {
@@ -569,13 +626,13 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
                             //检查自己是否在群组中
                             UserInfo info = activity.mGroupInfo.getGroupMemberInfo(JMessageClient
                                     .getMyInfo().getUserName());
-                            if (!TextUtils.isEmpty(activity.mGroupInfo.getGroupName())){
+                            if (!TextUtils.isEmpty(activity.mGroupInfo.getGroupName())) {
                                 activity.mGroupName = activity.mGroupInfo.getGroupName();
-                                if (info != null){
+                                if (info != null) {
                                     activity.mChatView.setChatTitle(activity.mGroupName,
                                             activity.mGroupInfo.getGroupMembers().size());
                                     activity.mChatView.showRightBtn();
-                                }else {
+                                } else {
                                     activity.mChatView.setChatTitle(activity.mGroupName);
                                     activity.mChatView.dismissRightBtn();
                                 }
