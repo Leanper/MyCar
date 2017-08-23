@@ -146,6 +146,43 @@ public class MainActivity extends BaseActivity {
         startActivity(intent);
     }
 
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_main;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        ButterKnife.bind(this);
+        setToolBar(mToolbar, "", false);
+        JMessageClient.registerEventReceiver(this);
+        //默认为“蹭车”页面
+        setOnClickMenu(R.id.rl_cengche);
+    }
+
+    @Override
+    protected void onPause() {
+        JCoreInterface.onPause(this);
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        JCoreInterface.onResume(this);
+        super.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        JMessageClient.unRegisterEventReceiver(this);
+    }
+
+    /**
+     * 加载底部菜单按钮和对应的Fragment
+     * @param id
+     */
     private void setOnClickMenu(int id) {
         FragmentManager fm = getFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
@@ -238,45 +275,6 @@ public class MainActivity extends BaseActivity {
             }
         }
     }
-
-
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_main;
-    }
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        ButterKnife.bind(this);
-        setToolBar(mToolbar, "", false);
-        JMessageClient.registerEventReceiver(this);
-        //默认为“蹭车”页面
-        setOnClickMenu(R.id.rl_cengche);
-    }
-
-    @Override
-    protected void onPause() {
-        JCoreInterface.onPause(this);
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        JCoreInterface.onResume(this);
-        super.onResume();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        JMessageClient.unRegisterEventReceiver(this);
-    }
-
-    private void initView() {
-    }
-
-
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
