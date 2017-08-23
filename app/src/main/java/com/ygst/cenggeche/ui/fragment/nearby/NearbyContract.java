@@ -1,4 +1,4 @@
-package com.ygst.cenggeche.ui.fragment.finding;
+package com.ygst.cenggeche.ui.fragment.nearby;
 
 import android.content.Context;
 
@@ -10,7 +10,7 @@ import com.ygst.cenggeche.mvp.BaseView;
  *  邮箱 784787081@qq.com
  */
 
-public class FindingContract {
+public class NearbyContract {
     interface View extends BaseView {
         
     }

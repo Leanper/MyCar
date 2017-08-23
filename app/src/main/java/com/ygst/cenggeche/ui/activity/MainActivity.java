@@ -5,11 +5,8 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -21,9 +18,9 @@ import com.ygst.cenggeche.ui.activity.addfriend.AddFriendActivity;
 import com.ygst.cenggeche.ui.activity.base.BaseActivity;
 import com.ygst.cenggeche.ui.activity.friendlist.FriendListActivity;
 import com.ygst.cenggeche.ui.fragment.cengche.CengCheFragment;
-import com.ygst.cenggeche.ui.fragment.finding.FindingFragment;
 import com.ygst.cenggeche.ui.fragment.me.MeFragment;
 import com.ygst.cenggeche.ui.fragment.message.MessageFragment;
+import com.ygst.cenggeche.ui.fragment.nearby.NearbyFragment;
 import com.ygst.cenggeche.utils.ToastUtil;
 
 import java.io.File;
@@ -67,11 +64,11 @@ import im.sdk.debug.activity.notify.ShowGroupNotificationActivity;
 import im.sdk.debug.activity.setting.ShowLogoutReasonActivity;
 import im.sdk.debug.activity.showinfo.ShowMyInfoUpdateActivity;
 
-public class MainActivity extends BaseActivity{
+public class MainActivity extends BaseActivity {
     private String TAG = "MainActivity";
     private TextView mTextMessage;
     private CengCheFragment mCengCheFragment;
-    private FindingFragment mFindingFragment;
+    private NearbyFragment mNearbyFragment;
     private MessageFragment mMsgFragment;
     private MeFragment mMeFragment;
 
@@ -86,77 +83,138 @@ public class MainActivity extends BaseActivity{
     @BindView(R.id.iv_title_menu_right)
     ImageView mImageViewTitleMenuRight;
 
+    //菜单——蹭车
+    @BindView(R.id.iv_cengche)
+    ImageView mImageViewCengChe;
+    @BindView(R.id.tv_cengche)
+    TextView mTextViewCengChe;
+
+    //蹭车点击事件
+    @OnClick(R.id.rl_cengche)
+    public void onClickCengChe() {
+        setOnClickMenu(R.id.rl_cengche);
+    }
+
+    //菜单——附近
+    @BindView(R.id.iv_nearby)
+    ImageView mImageViewNearby;
+    @BindView(R.id.tv_nearby)
+    TextView mTextViewNearby;
+
+    //附近点击事件
+    @OnClick(R.id.rl_nearby)
+    public void onClickNearby() {
+        setOnClickMenu(R.id.rl_nearby);
+    }
+
+    //菜单——消息
+    @BindView(R.id.iv_message)
+    ImageView mImageViewMessage;
+    @BindView(R.id.tv_message)
+    TextView mTextViewMessage;
+
+    //消息点击事件
+    @OnClick(R.id.rl_message)
+    public void onClickMessage() {
+        setOnClickMenu(R.id.rl_message);
+    }
+
+    //菜单——我的
+    @BindView(R.id.iv_me)
+    ImageView mImageViewMe;
+    @BindView(R.id.tv_me)
+    TextView mTextViewMe;
+
+    //我的点击事件
+    @OnClick(R.id.rl_me)
+    public void onClickMe() {
+        setOnClickMenu(R.id.rl_me);
+    }
+
+    //标题栏左边按钮点击事件
     @OnClick(R.id.iv_title_menu_left)
-    public void titleMenuLeft(){
+    public void titleMenuLeft() {
         Intent intent = new Intent();
         intent.setClass(this, AddFriendActivity.class);
         startActivity(intent);
     }
-
+    //标题栏右边按钮点击事件
     @OnClick(R.id.iv_title_menu_right)
-    public void titleMenuRight(){
+    public void titleMenuRight() {
         Intent intent = new Intent();
         intent.setClass(this, FriendListActivity.class);
         startActivity(intent);
     }
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-
-            FragmentManager fm = getFragmentManager();
-            FragmentTransaction transaction = fm.beginTransaction();
-
-            switch (item.getItemId()) {
-                case R.id.navigation_cengche:
-                    doubleClick(R.id.navigation_cengche);
-                    mToolbar.setVisibility(View.VISIBLE);
-                    if (mCengCheFragment == null) {
-                        mCengCheFragment = new CengCheFragment();
-                    }
-                    // 使用当前Fragment的布局替代content的控件
-                    transaction.replace(R.id.content, mCengCheFragment);
-                    break;
-                case R.id.navigation_finding:
-                    doubleClick(R.id.navigation_finding);
-                    mToolbar.setVisibility(View.VISIBLE);
-                    if (mCengCheFragment == null) {
-                        mCengCheFragment = new CengCheFragment();
-                    }
-                    // 使用当前Fragment的布局替代content的控件
-                    transaction.replace(R.id.content, mCengCheFragment);
-                    break;
-                case R.id.navigation_message:
-                    doubleClick(R.id.navigation_message);
-                    mToolbar.setVisibility(View.VISIBLE);
-                    mRLayoutMainTitle.setVisibility(View.VISIBLE);
-                    mImageViewTitleMenuLeft.setVisibility(View.VISIBLE);
-                    mImageViewTitleMenuRight.setVisibility(View.VISIBLE);
-                    mTextViewTitle.setText("消息");
-                    if (mMsgFragment == null) {
-                        mMsgFragment = new MessageFragment();
-                    }
-                    transaction.replace(R.id.content, mMsgFragment);
-                    break;
-                case R.id.navigation_me:
-                    doubleClick(R.id.navigation_me);
-                    mToolbar.setVisibility(View.GONE);
-                    if (mMeFragment == null) {
-                        mMeFragment = new MeFragment();
-                    }
-                    transaction.replace(R.id.content, mMeFragment);
-                    break;
+    private void setOnClickMenu(int id) {
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+        if (id == R.id.rl_cengche) {
+            doubleClick(R.id.rl_cengche);
+            mToolbar.setVisibility(View.VISIBLE);
+            mImageViewCengChe.setImageResource(R.mipmap.icon_cengche);
+            mTextViewCengChe.setTextColor(getResources().getColor(R.color.colorTheme));
+            if (mCengCheFragment == null) {
+                mCengCheFragment = new CengCheFragment();
             }
-            // 事务提交
-            transaction.commit();
-            return true;
+            // 使用当前Fragment的布局替代content的控件
+            transaction.replace(R.id.content, mCengCheFragment);
+        } else {
+            mImageViewCengChe.setImageResource(R.mipmap.icon_cengche_un);
+            mTextViewCengChe.setTextColor(getResources().getColor(R.color.gray));
         }
-    };
+        if (id == R.id.rl_nearby) {
+            doubleClick(R.id.rl_nearby);
+            mImageViewNearby.setImageResource(R.mipmap.icon_nearby);
+            mTextViewNearby.setTextColor(getResources().getColor(R.color.colorTheme));
+            mToolbar.setVisibility(View.VISIBLE);
+            if (mNearbyFragment == null) {
+                mNearbyFragment = new NearbyFragment();
+            }
+            transaction.replace(R.id.content, mNearbyFragment);
+        } else {
+            mImageViewNearby.setImageResource(R.mipmap.icon_nearby_un);
+            mTextViewNearby.setTextColor(getResources().getColor(R.color.gray));
+        }
+        if (id == R.id.rl_message) {
+            doubleClick(R.id.rl_message);
+            mImageViewMessage.setImageResource(R.mipmap.icon_message);
+            mTextViewMessage.setTextColor(getResources().getColor(R.color.colorTheme));
+            mToolbar.setVisibility(View.VISIBLE);
+            mRLayoutMainTitle.setVisibility(View.VISIBLE);
+            mImageViewTitleMenuLeft.setVisibility(View.VISIBLE);
+            mImageViewTitleMenuRight.setVisibility(View.VISIBLE);
+            mTextViewTitle.setText("消息");
+            if (mMsgFragment == null) {
+                mMsgFragment = new MessageFragment();
+            }
+            transaction.replace(R.id.content, mMsgFragment);
+        } else {
+            mImageViewMessage.setImageResource(R.mipmap.icon_message_un);
+            mTextViewMessage.setTextColor(getResources().getColor(R.color.gray));
+        }
+        if (id == R.id.rl_me) {
+            doubleClick(R.id.rl_me);
+            mImageViewMe.setImageResource(R.mipmap.icon_me);
+            mTextViewMe.setTextColor(getResources().getColor(R.color.colorTheme));
+            mToolbar.setVisibility(View.GONE);
+            if (mMeFragment == null) {
+                mMeFragment = new MeFragment();
+            }
+            transaction.replace(R.id.content, mMeFragment);
+        } else {
+            mImageViewMe.setImageResource(R.mipmap.icon_me_un);
+            mTextViewMe.setTextColor(getResources().getColor(R.color.gray));
+        }
+        // 事务提交
+        transaction.commit();
+    }
 
     private long[] mHits = new long[2];
 
     /**
      * 判断是否双击(这里有个问题，就是连续点击两个不同 按钮也会触发，建议分开添加此方法)
+     *
      * @param itemId
      */
     private void doubleClick(int itemId) {
@@ -165,35 +223,36 @@ public class MainActivity extends BaseActivity{
         if (mHits[mHits.length - 1] - mHits[0] < 500) { //间隔时间设置为500毫秒
             /**双击的业务逻辑*/
             switch (itemId) {
-                case R.id.navigation_cengche:
+                case R.id.rl_cengche:
                     ToastUtil.show(this, "蹭车双击");
                     break;
-                case R.id.navigation_finding:
-                    ToastUtil.show(this, "发现双击");
+                case R.id.rl_nearby:
+                    ToastUtil.show(this, "附近双击");
                     break;
-                case R.id.navigation_message:
+                case R.id.rl_message:
                     ToastUtil.show(this, "消息双击");
                     break;
-                case R.id.navigation_me:
+                case R.id.rl_me:
                     ToastUtil.show(this, "我的双击");
                     break;
             }
         }
     }
 
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_main;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
         setToolBar(mToolbar, "", false);
         JMessageClient.registerEventReceiver(this);
-        initView();
-        // 设置默认的Fragment
-        setDefaultFragment();
+        //默认为“蹭车”页面
+        setOnClickMenu(R.id.rl_cengche);
     }
 
     @Override
@@ -215,19 +274,6 @@ public class MainActivity extends BaseActivity{
     }
 
     private void initView() {
-//        mTextMessage = (TextView) findViewById(R.id.message);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
-        navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-    }
-
-
-    private void setDefaultFragment() {
-        mToolbar.setVisibility(View.GONE);
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction transaction = fm.beginTransaction();
-        mCengCheFragment = new CengCheFragment();
-        transaction.replace(R.id.content, mCengCheFragment);
-        transaction.commit();
     }
 
 
@@ -235,7 +281,7 @@ public class MainActivity extends BaseActivity{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == 8) {
-            ToastUtil.show(this,"onActivityResult888");
+            ToastUtil.show(this, "onActivityResult888");
         }
     }
 
@@ -251,8 +297,10 @@ public class MainActivity extends BaseActivity{
     public static final String DOWNLOAD_THUMBNAIL_IMAGE = "download_thumbnail_image";
     public static final String IS_UPLOAD = "is_upload";
     public static final String LOGOUT_REASON = "logout_reason";
+
     /**
      * 通知栏点击事件实体类NotificationClickEvent
+     *
      * @param event
      */
     public void onEvent(NotificationClickEvent event) {
@@ -353,6 +401,7 @@ public class MainActivity extends BaseActivity{
 
     /**
      * 消息事件实体类 MessageEvent
+     *
      * @param event
      */
     public void onEvent(MessageEvent event) {
@@ -447,6 +496,7 @@ public class MainActivity extends BaseActivity{
 
     /**
      * 新增联系人相关通知事件ContactNotifyEvent
+     *
      * @param event
      */
     public void onEvent(ContactNotifyEvent event) {
@@ -486,6 +536,7 @@ public class MainActivity extends BaseActivity{
 
     /**
      * 用户下线事件UserLogoutEvent (已过时，请使用LoginStateChangeEvent代替)
+     *
      * @param event
      */
     public void onEvent(LoginStateChangeEvent event) {
@@ -498,6 +549,7 @@ public class MainActivity extends BaseActivity{
 
     /**
      * 离线消息事件实体类 OfflineMessageEvent Since 2.1.0
+     *
      * @param event
      */
     public void onEventMainThread(OfflineMessageEvent event) {
@@ -517,6 +569,7 @@ public class MainActivity extends BaseActivity{
 
     /**
      * 会话刷新事件实体类 ConversationRefreshEvent
+     *
      * @param event
      */
     public void onEventMainThread(ConversationRefreshEvent event) {
@@ -531,8 +584,8 @@ public class MainActivity extends BaseActivity{
     }
 
     /**
+     * 当前登录用户信息被更新事件实体类 MyInfoUpdatedEvent
      *
-     *当前登录用户信息被更新事件实体类 MyInfoUpdatedEvent
      * @param event
      */
     public void onEvent(MyInfoUpdatedEvent event) {

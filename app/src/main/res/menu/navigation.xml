@@ -3,7 +3,7 @@
 
     <item
         android:id="@+id/navigation_cengche"
-        android:icon="@drawable/ic_home_black_24dp"
+        android:icon="@mipmap/icon_cengche"
         android:title="@string/menu_cengche" />
     <item
         android:id="@+id/navigation_finding"

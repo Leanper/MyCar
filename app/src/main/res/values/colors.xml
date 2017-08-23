@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!--主题颜色-->
-    <color name="colorTheme">#13b7f6</color>
+    <color name="colorTheme">#a878ff</color>
+    <!--辅助颜色-->
+    <color name="colorSub">#13b7f6</color>
     <!--原色-->
     <color name="colorPrimary">#26d97f</color>
     <!--状态栏颜色-->
     <color name="colorPrimaryDark">#f1693f</color>
     <!--控件颜色-->
     <color name="colorAccent">#FF4081</color>
-
 
 
     <!--水波纹或5.0以下选择器颜色（activity_web_view.xml）-->
