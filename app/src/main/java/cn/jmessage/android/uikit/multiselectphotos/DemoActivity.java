@@ -2,7 +2,11 @@ package cn.jmessage.android.uikit.multiselectphotos;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +21,9 @@ public class DemoActivity extends Activity implements PickPictureActivity.OnSele
     public static final int RESULT_CODE_SELECT_PICTURE = 8;
     public static final int REQUEST_CODE_SELECT_ALBUM = 10;
     private static final String PICTURE_PATH = "picturePath";
+    String[] perms = {"android.permission.READ_EXTERNAL_STORAGE"};
+    String permission = "android.permission.READ_EXTERNAL_STORAGE";
+    final int REQUEST_PERMISSIONS = 101;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,11 +34,36 @@ public class DemoActivity extends Activity implements PickPictureActivity.OnSele
         startBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
-                intent.setClass(DemoActivity.this, AlbumListActivity.class);
-                startActivityForResult(intent, REQUEST_CODE_SELECT_ALBUM);
+                if (ContextCompat.checkSelfPermission(DemoActivity.this, permission) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(DemoActivity.this, perms, REQUEST_PERMISSIONS);
+                } else {
+                    intentActivity();
+                }
             }
         });
+    }
+
+    private void intentActivity() {
+        Intent intent = new Intent();
+        intent.setClass(DemoActivity.this, AlbumListActivity.class);
+        startActivityForResult(intent, REQUEST_CODE_SELECT_ALBUM);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST_PERMISSIONS: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // 权限被用户同意，可以去放肆了。
+                    intentActivity();
+                } else {
+                    // 权限被用户拒绝了，洗洗睡吧。
+                }
+                return;
+            }
+        }
     }
 
     @Override
