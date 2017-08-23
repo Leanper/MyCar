@@ -250,8 +250,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:orientation="vertical"
-                        android:visibility="invisible">
+                        android:orientation="vertical">
 
                         <ImageButton
                             android:id="@+id/jmui_send_video_btn"
@@ -282,8 +281,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:orientation="vertical"
-                        android:visibility="invisible">
+                        android:orientation="vertical">
 
                         <ImageButton
                             android:id="@+id/jmui_send_location_btn"
@@ -304,8 +302,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:orientation="vertical"
-                        android:visibility="invisible">
+                        android:orientation="vertical">
 
                         <ImageButton
                             android:id="@+id/jmui_business_card_btn"

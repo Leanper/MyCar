@@ -10,8 +10,8 @@ android {
         applicationId "com.ygst.cenggeche"
         minSdkVersion rootProject.ext.minSdk//也可以支持16级以上的不过页面跳转效果就没有了，透明状态栏也没有。
         targetSdkVersion rootProject.ext.targetSdk
-        versionCode 3
-        versionName "1.0.3"
+        versionCode 1
+        versionName "1.0.1"
         testInstrumentationRunner "android.support.TestBean.runner.AndroidJUnitRunner"
         multiDexEnabled = true
 //        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

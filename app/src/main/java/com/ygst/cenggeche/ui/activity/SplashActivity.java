@@ -14,6 +14,7 @@ import com.ygst.cenggeche.utils.CommonUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+import cn.jmessage.android.uikit.multiselectphotos.DemoActivity;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.model.UserInfo;
 import im.sdk.debug.RegisterAndLoginActivity;
@@ -72,7 +73,7 @@ public class SplashActivity extends BaseActivity {
     }
     public void btnJChat(View view){
 
-        CommonUtils.startActivity(this,RegisterAndLoginActivity.class);
+        CommonUtils.startActivity(this,DemoActivity.class);
     }
 
     private void initData() {
