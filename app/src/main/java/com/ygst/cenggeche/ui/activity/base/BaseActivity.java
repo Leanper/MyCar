@@ -2,6 +2,7 @@ package com.ygst.cenggeche.ui.activity.base;
 
 import android.animation.Animator;
 import android.animation.ValueAnimator;
+import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
@@ -67,7 +68,11 @@ public abstract class BaseActivity extends AppCompatActivity implements LifeSubs
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //设置没有系统自带标题头
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        // 设置为竖屏显示
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         setContentView(getLayoutId());
         mVelocityTracker = mVelocityTracker.obtain();
         decorView = getWindow().getDecorView();

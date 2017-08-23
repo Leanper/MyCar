@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">蹭个车</string>
     <string name="menu_cengche">蹭车</string>
+    <string name="menu_shaoren">捎人</string>
     <string name="menu_nearby">附近</string>
     <string name="menu_message">消息</string>
     <string name="menu_me">我的</string>

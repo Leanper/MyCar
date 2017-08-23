@@ -1,31 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:scaleType="fitXY"
-        android:src="@drawable/me1" />
+        android:src="@drawable/qing4" />
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:scaleType="fitXY"
-        android:src="@drawable/me2" />
+        android:src="@drawable/qing3" />
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:scaleType="fitXY"
-        android:src="@drawable/me3" />
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:scaleType="fitXY"
-        android:src="@drawable/me4" />
+        android:src="@drawable/qing1" />
 </LinearLayout>

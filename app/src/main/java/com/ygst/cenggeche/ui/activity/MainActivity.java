@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import com.ygst.cenggeche.ui.fragment.cengche.CengCheFragment;
 import com.ygst.cenggeche.ui.fragment.me.MeFragment;
 import com.ygst.cenggeche.ui.fragment.message.MessageFragment;
 import com.ygst.cenggeche.ui.fragment.nearby.NearbyFragment;
+import com.ygst.cenggeche.ui.fragment.shaoren.ShaoRenFragment;
 import com.ygst.cenggeche.utils.ToastUtil;
 
 import java.io.File;
@@ -66,22 +68,39 @@ import im.sdk.debug.activity.showinfo.ShowMyInfoUpdateActivity;
 
 public class MainActivity extends BaseActivity {
     private String TAG = "MainActivity";
-    private TextView mTextMessage;
     private CengCheFragment mCengCheFragment;
+    private ShaoRenFragment mShaoRenFragment;
     private NearbyFragment mNearbyFragment;
     private MessageFragment mMsgFragment;
     private MeFragment mMeFragment;
 
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    @BindView(R.id.rl_main_title)
-    RelativeLayout mRLayoutMainTitle;
+    @BindView(R.id.rl_toolbar_message)
+    RelativeLayout mRLtoolbarMessage;
+    @BindView(R.id.rl_toolbar_cengche)
+    RelativeLayout mRLtoolbarCengChe;
     @BindView(R.id.tv_title)
     TextView mTextViewTitle;
     @BindView(R.id.iv_title_menu_left)
     ImageView mImageViewTitleMenuLeft;
     @BindView(R.id.iv_title_menu_right)
     ImageView mImageViewTitleMenuRight;
+
+    //标题栏左边按钮点击事件
+    @OnClick(R.id.iv_title_menu_left)
+    public void titleMenuLeft() {
+        Intent intent = new Intent();
+        intent.setClass(this, AddFriendActivity.class);
+        startActivity(intent);
+    }
+    //标题栏右边按钮点击事件
+    @OnClick(R.id.iv_title_menu_right)
+    public void titleMenuRight() {
+        Intent intent = new Intent();
+        intent.setClass(this, FriendListActivity.class);
+        startActivity(intent);
+    }
 
     //菜单——蹭车
     @BindView(R.id.iv_cengche)
@@ -131,19 +150,41 @@ public class MainActivity extends BaseActivity {
         setOnClickMenu(R.id.rl_me);
     }
 
-    //标题栏左边按钮点击事件
-    @OnClick(R.id.iv_title_menu_left)
-    public void titleMenuLeft() {
-        Intent intent = new Intent();
-        intent.setClass(this, AddFriendActivity.class);
-        startActivity(intent);
+    //顶部标题栏按钮【蹭车】
+    @BindView(R.id.btn_cengche)
+    Button mBtnCengChe;
+    //顶部标题栏按钮【捎人】
+    @BindView(R.id.btn_shaoren)
+    Button mBtnShaoRen;
+    //顶部标题栏【蹭车】点击事件
+    @OnClick(R.id.btn_cengche)
+    public void onClickToolbarCengChe(){
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+        mBtnCengChe.setTextColor(getResources().getColor(R.color.colorSub2));
+        mBtnShaoRen.setTextColor(getResources().getColor(R.color.gray));
+        if (mCengCheFragment == null) {
+            mCengCheFragment = new CengCheFragment();
+        }
+        // 使用当前Fragment的布局替代content的控件
+        transaction.replace(R.id.content, mCengCheFragment);
+        // 事务提交
+        transaction.commit();
     }
-    //标题栏右边按钮点击事件
-    @OnClick(R.id.iv_title_menu_right)
-    public void titleMenuRight() {
-        Intent intent = new Intent();
-        intent.setClass(this, FriendListActivity.class);
-        startActivity(intent);
+    //顶部标题栏【捎人】点击事件
+    @OnClick(R.id.btn_shaoren)
+    public void onClickToolbarShaoRen(){
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+        mBtnShaoRen.setTextColor(getResources().getColor(R.color.colorSub2));
+        mBtnCengChe.setTextColor(getResources().getColor(R.color.gray));
+        if (mShaoRenFragment == null) {
+            mShaoRenFragment = new ShaoRenFragment();
+        }
+        // 使用当前Fragment的布局替代content的控件
+        transaction.replace(R.id.content, mShaoRenFragment);
+        // 事务提交
+        transaction.commit();
     }
 
     @Override
@@ -179,32 +220,38 @@ public class MainActivity extends BaseActivity {
         JMessageClient.unRegisterEventReceiver(this);
     }
 
+    private long[] mMessageHits = new long[2];
+    private long[] mCengCheHits = new long[2];
+    private long[] mNeardyHits = new long[2];
     /**
-     * 加载底部菜单按钮和对应的Fragment
-     * @param id
+     * 加载顶部标题栏，底部菜单按钮和对应的Fragment
+     * @param id --菜单按钮Id
      */
     private void setOnClickMenu(int id) {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
+        //======蹭车
         if (id == R.id.rl_cengche) {
-            doubleClick(R.id.rl_cengche);
-            mToolbar.setVisibility(View.VISIBLE);
+            doubleClick(R.id.rl_cengche,mCengCheHits);
             mImageViewCengChe.setImageResource(R.mipmap.icon_cengche);
             mTextViewCengChe.setTextColor(getResources().getColor(R.color.colorTheme));
+            mRLtoolbarCengChe.setVisibility(View.VISIBLE);
             if (mCengCheFragment == null) {
                 mCengCheFragment = new CengCheFragment();
             }
             // 使用当前Fragment的布局替代content的控件
             transaction.replace(R.id.content, mCengCheFragment);
         } else {
+            mRLtoolbarCengChe.setVisibility(View.GONE);
             mImageViewCengChe.setImageResource(R.mipmap.icon_cengche_un);
             mTextViewCengChe.setTextColor(getResources().getColor(R.color.gray));
         }
+        //=====附近
         if (id == R.id.rl_nearby) {
-            doubleClick(R.id.rl_nearby);
+            doubleClick(R.id.rl_nearby,mNeardyHits);
             mImageViewNearby.setImageResource(R.mipmap.icon_nearby);
             mTextViewNearby.setTextColor(getResources().getColor(R.color.colorTheme));
-            mToolbar.setVisibility(View.VISIBLE);
+            mTextViewTitle.setText(R.string.menu_nearby);
             if (mNearbyFragment == null) {
                 mNearbyFragment = new NearbyFragment();
             }
@@ -213,25 +260,24 @@ public class MainActivity extends BaseActivity {
             mImageViewNearby.setImageResource(R.mipmap.icon_nearby_un);
             mTextViewNearby.setTextColor(getResources().getColor(R.color.gray));
         }
+        //=====消息
         if (id == R.id.rl_message) {
-            doubleClick(R.id.rl_message);
+            doubleClick(R.id.rl_message,mMessageHits);
             mImageViewMessage.setImageResource(R.mipmap.icon_message);
             mTextViewMessage.setTextColor(getResources().getColor(R.color.colorTheme));
-            mToolbar.setVisibility(View.VISIBLE);
-            mRLayoutMainTitle.setVisibility(View.VISIBLE);
-            mImageViewTitleMenuLeft.setVisibility(View.VISIBLE);
-            mImageViewTitleMenuRight.setVisibility(View.VISIBLE);
-            mTextViewTitle.setText("消息");
+            mRLtoolbarMessage.setVisibility(View.VISIBLE);
+            mTextViewTitle.setText(R.string.menu_message);
             if (mMsgFragment == null) {
                 mMsgFragment = new MessageFragment();
             }
             transaction.replace(R.id.content, mMsgFragment);
         } else {
+            mRLtoolbarMessage.setVisibility(View.GONE);
             mImageViewMessage.setImageResource(R.mipmap.icon_message_un);
             mTextViewMessage.setTextColor(getResources().getColor(R.color.gray));
         }
+        //=====我的
         if (id == R.id.rl_me) {
-            doubleClick(R.id.rl_me);
             mImageViewMe.setImageResource(R.mipmap.icon_me);
             mTextViewMe.setTextColor(getResources().getColor(R.color.colorTheme));
             mToolbar.setVisibility(View.GONE);
@@ -240,6 +286,7 @@ public class MainActivity extends BaseActivity {
             }
             transaction.replace(R.id.content, mMeFragment);
         } else {
+            mToolbar.setVisibility(View.VISIBLE);
             mImageViewMe.setImageResource(R.mipmap.icon_me_un);
             mTextViewMe.setTextColor(getResources().getColor(R.color.gray));
         }
@@ -247,14 +294,14 @@ public class MainActivity extends BaseActivity {
         transaction.commit();
     }
 
-    private long[] mHits = new long[2];
 
     /**
      * 判断是否双击(这里有个问题，就是连续点击两个不同 按钮也会触发，建议分开添加此方法)
      *
-     * @param itemId
+     * @param itemId 点击的按钮的Id
+     * @param mHits 每次点击的时间的数组
      */
-    private void doubleClick(int itemId) {
+    private void doubleClick(int itemId , long[] mHits) {
         System.arraycopy(mHits, 1, mHits, 0, mHits.length - 1);
         mHits[mHits.length - 1] = SystemClock.uptimeMillis();//获取手机开机时间
         if (mHits[mHits.length - 1] - mHits[0] < 500) { //间隔时间设置为500毫秒
@@ -268,9 +315,6 @@ public class MainActivity extends BaseActivity {
                     break;
                 case R.id.rl_message:
                     ToastUtil.show(this, "消息双击");
-                    break;
-                case R.id.rl_me:
-                    ToastUtil.show(this, "我的双击");
                     break;
             }
         }

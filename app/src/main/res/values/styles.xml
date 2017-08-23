@@ -2,8 +2,6 @@
     <!-- Base application theme. -->
 
     <style name="BaseAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!--固定为竖屏-->
-        <item name="android:screenOrientation">portrait</item>
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
