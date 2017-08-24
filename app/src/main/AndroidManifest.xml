@@ -45,6 +45,9 @@
             </intent-filter>
         </activity>
 
+        <!--测试页-->
+        <activity android:name=".ui.activity.TestActivity"
+            android:theme="@style/AppTheme" />
         <!--登录页-->
         <activity android:name=".ui.activity.login.LoginActivity" />
         <!--主界面-->
@@ -128,7 +131,8 @@
             android:theme="@style/noTitle" />
         <activity
             android:name="cn.jmessage.android.uikit.chatting.ChatActivity"
-            android:theme="@style/JchatTheme"  />
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/JchatTheme" />
 
 <!--============================图片选择器================================-->
         <activity android:name="com.jarek.imageselect.activity.MainActivity"/>

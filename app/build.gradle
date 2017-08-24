@@ -51,7 +51,6 @@ android {
                            'src/main/res/layout/chatting',
                            'src/main/res/layout/jmessage',
                            'src/main/res/layout/jchat',
-                           'src/main/res/layout',
                            'src/main/res']
             //==================
 //            jniLibs.srcDirs = ['src/main/jniLibs']

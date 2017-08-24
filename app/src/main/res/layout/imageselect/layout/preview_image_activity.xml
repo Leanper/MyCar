@@ -15,8 +15,9 @@
     <com.jarek.imageselect.library.TitleView
         android:id="@+id/tv_large_image"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="70dp"
         android:layout_alignParentLeft="true"
+        android:fitsSystemWindows="true"
         app:title_name="@string/photo_preview"
         android:layout_alignParentTop="true"
         app:right_text="@string/select_ok"

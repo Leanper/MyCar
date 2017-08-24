@@ -30,6 +30,7 @@ import android.widget.Toast;
 
 import com.jarek.imageselect.activity.FolderListActivity;
 import com.jarek.imageselect.bean.ImageFolderBean;
+import com.ygst.cenggeche.utils.AndroidBug5497Workaround;
 import com.ygst.cenggeche.utils.JChatUtils;
 import com.ygst.cenggeche.utils.ToastUtil;
 
