@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.utils.LogUtils;
 import com.ygst.cenggeche.R;
+import com.ygst.cenggeche.ui.view.XCRoundImageView;
 
 import java.util.List;
 
@@ -35,6 +36,7 @@ public class SwipeMenuListViewAdapter extends BaseAdapter {
     Context mContext;
     String lastTime;
     ViewHolder holder;
+
     public SwipeMenuListViewAdapter(Context context, List<Conversation> list) {
         mContext = context;
         this.mListConversation = list;
@@ -62,16 +64,16 @@ public class SwipeMenuListViewAdapter extends BaseAdapter {
                     R.layout.item_list_conversation, null);
             new ViewHolder(convertView);
         }
-         holder = (ViewHolder) convertView.getTag();
+        holder = (ViewHolder) convertView.getTag();
 
         Conversation convItem = mListConversation.get(position);
         Message lastMsg = convItem.getLatestMessage();
-         String contentStr = getLastMag(lastMsg);
+        String contentStr = getLastMag(lastMsg);
 
 //        String contentStr = ((TextContent) lastMsg.getContent()).getText();
 
         UserInfo userInfo = (UserInfo) convItem.getTargetInfo();
-        LogUtils.i("SwipeMenuListViewAdapter","会话名称："+convItem.getTitle());
+        LogUtils.i("SwipeMenuListViewAdapter", "会话名称：" + convItem.getTitle());
         //获取头像
         setHeadIcon(convItem);
         //会话的名称
@@ -137,10 +139,18 @@ public class SwipeMenuListViewAdapter extends BaseAdapter {
         return contentStr;
     }
 
-    private void setHeadIcon(Conversation convItem){
+    private void setHeadIcon(Conversation convItem) {
         if (convItem.getType().equals(ConversationType.single)) {
             UserInfo mUserInfo = (UserInfo) convItem.getTargetInfo();
             if (mUserInfo != null) {
+                //显示性别
+                if (mUserInfo.getGender().equals(UserInfo.Gender.female)) {
+                    holder.mIVgender.setImageResource(R.mipmap.icon_girl);
+                } else if (mUserInfo.getGender().equals(UserInfo.Gender.female)) {
+                    holder.mIVgender.setImageResource(R.mipmap.icon_boy);
+                } else {
+                }
+                //显示头像
                 mUserInfo.getAvatarBitmap(new GetAvatarBitmapCallback() {
                     @Override
                     public void gotResult(int status, String desc, Bitmap bitmap) {
@@ -163,13 +173,20 @@ public class SwipeMenuListViewAdapter extends BaseAdapter {
 
     class ViewHolder {
 
-        ImageView mIVavatar;
+        //头像
+        XCRoundImageView mIVavatar;
+        //性别
+        ImageView mIVgender;
+        //目标用户名称
         TextView mTVtargetName;
+        //最新消息
         TextView mTVlatestMessage;
+        //最后会话时间
         TextView mTVlastTime;
 
         public ViewHolder(View view) {
-            mIVavatar = (ImageView) view.findViewById(R.id.iv_avatar);
+            mIVavatar = (XCRoundImageView) view.findViewById(R.id.iv_avatar);
+            mIVgender = (ImageView) view.findViewById(R.id.iv_gender);
             mTVtargetName = (TextView) view.findViewById(R.id.tv_target_name);
             mTVlatestMessage = (TextView) view.findViewById(R.id.tv_latest_message);
             mTVlastTime = (TextView) view.findViewById(R.id.tv_last_time);

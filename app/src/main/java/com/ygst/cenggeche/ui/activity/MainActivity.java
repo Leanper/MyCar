@@ -15,7 +15,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ygst.cenggeche.R;
-import com.ygst.cenggeche.ui.activity.addfriend.AddFriendActivity;
 import com.ygst.cenggeche.ui.activity.base.BaseActivity;
 import com.ygst.cenggeche.ui.activity.friendlist.FriendListActivity;
 import com.ygst.cenggeche.ui.fragment.cengche.CengCheFragment;
@@ -74,28 +73,24 @@ public class MainActivity extends BaseActivity {
     private MessageFragment mMsgFragment;
     private MeFragment mMeFragment;
 
-    @BindView(R.id.toolbar)
+    @BindView(R.id.toolbar_main)
     Toolbar mToolbar;
-    @BindView(R.id.rl_toolbar_message)
-    RelativeLayout mRLtoolbarMessage;
     @BindView(R.id.rl_toolbar_cengche)
     RelativeLayout mRLtoolbarCengChe;
-    @BindView(R.id.tv_title)
-    TextView mTextViewTitle;
-    @BindView(R.id.iv_title_menu_left)
-    ImageView mImageViewTitleMenuLeft;
-    @BindView(R.id.iv_title_menu_right)
-    ImageView mImageViewTitleMenuRight;
+    @BindView(R.id.rl_toolbar_nearby)
+    RelativeLayout mRLtoolbarNearby;
+    @BindView(R.id.rl_toolbar_message)
+    RelativeLayout mRLtoolbarMessage;
 
     //标题栏左边按钮点击事件
-    @OnClick(R.id.iv_title_menu_left)
-    public void titleMenuLeft() {
-        Intent intent = new Intent();
-        intent.setClass(this, AddFriendActivity.class);
-        startActivity(intent);
-    }
-    //标题栏右边按钮点击事件
-    @OnClick(R.id.iv_title_menu_right)
+//    @OnClick(R.id.iv_title_menu_left)
+//    public void titleMenuLeft() {
+//        Intent intent = new Intent();
+//        intent.setClass(this, AddFriendActivity.class);
+//        startActivity(intent);
+//    }
+    //标题栏【消息】右边按钮点击事件
+    @OnClick(R.id.tv_show_friend_list)
     public void titleMenuRight() {
         Intent intent = new Intent();
         intent.setClass(this, FriendListActivity.class);
@@ -251,12 +246,13 @@ public class MainActivity extends BaseActivity {
             doubleClick(R.id.rl_nearby,mNeardyHits);
             mImageViewNearby.setImageResource(R.mipmap.icon_nearby);
             mTextViewNearby.setTextColor(getResources().getColor(R.color.colorTheme));
-            mTextViewTitle.setText(R.string.menu_nearby);
+            mRLtoolbarNearby.setVisibility(View.VISIBLE);
             if (mNearbyFragment == null) {
                 mNearbyFragment = new NearbyFragment();
             }
             transaction.replace(R.id.content, mNearbyFragment);
         } else {
+            mRLtoolbarNearby.setVisibility(View.GONE);
             mImageViewNearby.setImageResource(R.mipmap.icon_nearby_un);
             mTextViewNearby.setTextColor(getResources().getColor(R.color.gray));
         }
@@ -266,7 +262,6 @@ public class MainActivity extends BaseActivity {
             mImageViewMessage.setImageResource(R.mipmap.icon_message);
             mTextViewMessage.setTextColor(getResources().getColor(R.color.colorTheme));
             mRLtoolbarMessage.setVisibility(View.VISIBLE);
-            mTextViewTitle.setText(R.string.menu_message);
             if (mMsgFragment == null) {
                 mMsgFragment = new MessageFragment();
             }

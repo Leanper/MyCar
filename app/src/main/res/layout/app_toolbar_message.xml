@@ -2,18 +2,16 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rl_toolbar_message"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:visibility="gone">
+    android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/iv_title_menu_left"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_gravity="center"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:src="@mipmap/ic_launcher" />
+    <!--<ImageView-->
+        <!--android:id="@+id/iv_title_menu_left"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentLeft="true"-->
+        <!--android:paddingLeft="10dp"-->
+        <!--android:paddingRight="10dp"-->
+        <!--android:src="@mipmap/ic_launcher" />-->
 
     <TextView
         android:id="@+id/tv_title"
@@ -21,15 +19,26 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:textColor="@color/white"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:text="我的消息"/>
 
-    <ImageView
-        android:id="@+id/iv_title_menu_right"
+    <TextView
+        android:id="@+id/tv_show_friend_list"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_gravity="center"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:src="@mipmap/ic_launcher" />
+        android:layout_centerVertical="true"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:text="我的蹭友"/>
+    <!--<ImageView-->
+        <!--android:id="@+id/iv_title_menu_right"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_alignParentRight="true"-->
+        <!--android:paddingLeft="10dp"-->
+        <!--android:paddingRight="10dp"-->
+        <!--android:src="@mipmap/ic_launcher" />-->
 </RelativeLayout>

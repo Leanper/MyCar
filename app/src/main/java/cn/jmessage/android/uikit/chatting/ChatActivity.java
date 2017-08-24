@@ -1,6 +1,5 @@
 package cn.jmessage.android.uikit.chatting;
 
-import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
@@ -29,6 +28,8 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import com.jarek.imageselect.activity.FolderListActivity;
+import com.jarek.imageselect.bean.ImageFolderBean;
 import com.ygst.cenggeche.utils.JChatUtils;
 import com.ygst.cenggeche.utils.ToastUtil;
 
@@ -42,7 +43,6 @@ import cn.jmessage.android.uikit.chatting.utils.Event;
 import cn.jmessage.android.uikit.chatting.utils.FileHelper;
 import cn.jmessage.android.uikit.chatting.utils.IdHelper;
 import cn.jmessage.android.uikit.chatting.utils.SharePreferenceManager;
-import cn.jmessage.android.uikit.multiselectphotos.DemoActivity;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.callback.GetGroupInfoCallback;
 import cn.jpush.im.android.api.content.EventNotificationContent;
@@ -70,6 +70,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
     private static final String MsgIDs = "msgIDs";
     private static final String NAME = "name";
     public static final String NICKNAME = "nickname";
+    private static final String PICTURE_PATH = "picturePath";
     private static final String TARGET_APP_KEY = "";
     private static final int REQUEST_CODE_TAKE_PHOTO = 4;
     private static final int REQUEST_CODE_SELECT_PICTURE = 6;
@@ -305,21 +306,29 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
                 if (mChatView.getMoreMenu().getVisibility() == View.VISIBLE) {
                     mChatView.dismissMoreMenu();
                 }
-                Intent intent = new Intent();
-                if (mIsSingle) {
-                    intent.putExtra(JChatUtils.TARGET_ID_KEY, mTargetId);
-                    intent.putExtra(TARGET_APP_KEY, mTargetAppKey);
-                } else {
-                    intent.putExtra(JChatUtils.GROUP_ID_KEY, mGroupId);
-                }
-//            if (!FileHelper.isSdCardExist()) {
-//                Toast.makeText(this, IdHelper.getString(mContext, "sdcard_not_exist_toast"), Toast.LENGTH_SHORT).show();
-//            } else {
-//                intent.setClass(this, PickPictureTotalActivity.class);
-//                startActivityForResult(intent, REQUEST_CODE_SELECT_PICTURE);
-//            }
+                onMultiClick();
+//                Intent intent = new Intent();
+//                if (mIsSingle) {
+//                    intent.putExtra(JChatUtils.TARGET_ID_KEY, mTargetId);
+//                    intent.putExtra(TARGET_APP_KEY, mTargetAppKey);
+//                } else {
+//                    intent.putExtra(JChatUtils.GROUP_ID_KEY, mGroupId);
+//                }
+//                if (FileHelper.isSdCardExist()) {
+//                    intent.setClass(this, AlbumListActivity.class);
+//                    startActivityForResult(intent, REQUEST_CODE_SELECT_PICTURE);
+//                } else {
+//                    Toast.makeText(this, IdHelper.getString(mContext, "sdcard_not_exist_toast"), Toast.LENGTH_SHORT).show();
+//                }
             }
         }
+    }
+
+    /**
+     * 多选图片（进入图片选择器）
+     */
+    public void onMultiClick() {
+        FolderListActivity.startFolderListActivity(this, RESULT_CODE_SELECT_PICTURE, null, 9);
     }
 
     private void takePhoto() {
@@ -342,11 +351,21 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
     /**
      * 处理发送图片，刷新界面
      *
-     * @param data intent
      */
-    private void handleImgRefresh(Intent data) {
-        mChatAdapter.setSendImg(data.getIntArrayExtra(MsgIDs));
-        mChatView.setToBottom();
+    private void handleImgRefresh(String path) {
+        Bitmap bitmap = BitmapLoader.getBitmapFromFile(path, 720, 1280);
+        ImageContent.createImageContentAsync(bitmap, new ImageContent.CreateImageContentCallback() {
+            @Override
+            public void gotResult(int status, String desc, ImageContent imageContent) {
+                if (status == 0) {
+                    Message msg = mConv.createSendMessage(imageContent);
+                    Intent intent = new Intent();
+                    intent.putExtra(MsgIDs, new int[]{msg.getId()});
+                    mChatAdapter.setSendImg(intent.getIntArrayExtra(MsgIDs));
+                    mChatView.setToBottom();
+                }
+            }
+        });
     }
 
     @Override
@@ -466,32 +485,54 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case RESULT_CODE_SELECT_PICTURE:
+                    try {
+                        List<ImageFolderBean> list = (List<ImageFolderBean>) data.getSerializableExtra("list");
+                        if (list == null) {
+                            return;
+                        }
+                        for (ImageFolderBean string : list) {
+                            handleImgRefresh(string.path);
+                        }
+                    } catch (NullPointerException e) {
+                        Log.i(TAG, "onActivityResult unexpected result");
+                    }
+                    break;
+
+            }
+        }
         if (resultCode == Activity.RESULT_CANCELED) {
             return;
         }
         if (requestCode == REQUEST_CODE_TAKE_PHOTO) {
-            final Conversation conv = mConv;
             try {
-                String originPath = mPhotoPath;
-                Bitmap bitmap = BitmapLoader.getBitmapFromFile(originPath, 720, 1280);
-                ImageContent.createImageContentAsync(bitmap, new ImageContent.CreateImageContentCallback() {
-                    @Override
-                    public void gotResult(int status, String desc, ImageContent imageContent) {
-                        if (status == 0) {
-                            Message msg = conv.createSendMessage(imageContent);
-                            Intent intent = new Intent();
-                            intent.putExtra(MsgIDs, new int[]{msg.getId()});
-                            handleImgRefresh(intent);
-                        }
-                    }
-                });
+                handleImgRefresh(mPhotoPath);
             } catch (NullPointerException e) {
                 Log.i(TAG, "onActivityResult unexpected result");
             }
         } else if (resultCode == RESULT_CODE_SELECT_PICTURE) {
-            handleImgRefresh(data);
-            //如果作为UIKit使用,去掉以下几段代码
-        } else if (resultCode == RESULT_CODE_CHAT_DETAIL) {
+
+
+//                //得到图片路径
+//                ArrayList<String> pathList = data.getStringArrayListExtra(PICTURE_PATH);
+//                for (String path : pathList) {
+//                    LogUtils.i("path","图path: "+path);
+//                    Bitmap bitmap = BitmapLoader.getBitmapFromFile(path, 720, 1280);
+//                    ImageContent.createImageContentAsync(bitmap, new ImageContent.CreateImageContentCallback() {
+//                        @Override
+//                        public void gotResult(int status, String desc, ImageContent imageContent) {
+//                            if (status == 0) {
+//                                Message msg = conv.createSendMessage(imageContent);
+//                                Intent intent = new Intent();
+//                                intent.putExtra(MsgIDs, new int[]{msg.getId()});
+//                                handleImgRefresh(intent);
+//                            }
+//                        }
+//                    });
+//                }
+            //如果作为UIKit使用,去掉以下几段代码if (resultCode == RESULT_CODE_CHAT_DETAIL) {
             if (!mIsSingle) {
                 GroupInfo groupInfo = (GroupInfo) mConv.getTargetInfo();
                 UserInfo userInfo = groupInfo.getGroupMemberInfo(JMessageClient.getMyInfo().getUserName());

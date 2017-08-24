@@ -22,4 +22,12 @@
         <!-- 是否填充慢屏幕，引用android:windowNoTitle 的值 ?android:windowNoTitle，取决于android:windowNoTitle的值-->
         <item name="android:windowFullscreen">?android:windowNoTitle</item>
     </style>
+
+
+    <style name="Translucent" parent="android:style/Theme.Translucent">
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:colorForeground">#fff</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
 </resources>
