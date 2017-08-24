@@ -128,7 +128,7 @@
             android:theme="@style/noTitle" />
         <activity
             android:name="cn.jmessage.android.uikit.chatting.ChatActivity"
-            android:windowSoftInputMode="adjustResize" />
+            android:theme="@style/JchatTheme"  />
 
 <!--============================图片选择器================================-->
         <activity android:name="com.jarek.imageselect.activity.MainActivity"/>
