@@ -3,12 +3,14 @@ package com.ygst.cenggeche.app;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
+import android.graphics.Point;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Process;
 import android.os.StrictMode;
 import android.support.multidex.MultiDex;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -330,15 +332,16 @@ public class MyApplication extends Application {
         });
     }
 
+
+    public final static float DESIGN_WIDTH = 750; //绘制页面时参照的设计图宽度
     /**
-     * 解决java.lang.NoClassDefFoundError错误，方法数超过65536了
-     * 5.0以下系统会出次问题
-     * @param base
+     * 屏幕适配的处理（暂时没有使用，以后有时间研究）
      */
-    @Override
-    protected void attachBaseContext(Context base) {
-        super.attachBaseContext(base);
-        MultiDex.install(base);
+    public void resetDensity(){
+        Point size = new Point();
+        ((WindowManager)getSystemService(WINDOW_SERVICE)).getDefaultDisplay().getSize(size);
+
+        getResources().getDisplayMetrics().xdpi = size.x/DESIGN_WIDTH*72f;
     }
 
     /**
@@ -369,5 +372,16 @@ public class MyApplication extends Application {
                 .build();
         // Initialize ImageLoader with configuration.
         ImageLoader.getInstance().init(config);
+    }
+
+    /**
+     * 解决java.lang.NoClassDefFoundError错误，方法数超过65536了
+     * 5.0以下系统会出次问题
+     * @param base
+     */
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(base);
     }
 }
