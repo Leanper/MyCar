@@ -53,7 +53,8 @@
         <!--主界面-->
         <activity android:name=".ui.activity.MainActivity" />
         <!--自定义的聊天页-->
-        <activity android:name=".ui.activity.mychat.MyChatActivity" />
+        <activity android:name=".ui.activity.mychat.MyChatActivity"
+            android:theme="@style/BaseAppTheme" />
         <!--添加好友-->
         <activity android:name=".ui.activity.addfriend.AddFriendActivity" />
 

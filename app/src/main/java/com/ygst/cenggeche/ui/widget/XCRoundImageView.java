@@ -1,4 +1,4 @@
-package com.ygst.cenggeche.ui.view;
+package com.ygst.cenggeche.ui.widget;
 
 import android.content.Context;
 import android.graphics.Bitmap;

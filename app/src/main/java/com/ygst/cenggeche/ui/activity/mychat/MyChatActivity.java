@@ -33,10 +33,7 @@ import butterknife.ButterKnife;
 
 public class MyChatActivity extends MVPBaseActivity<MyChatContract.View, MyChatPresenter> implements MyChatContract.View,IEmotionSelectedListener {
 
-    @Override
-    protected int getLayoutId() {
-        return R.layout.activity_wx_session;
-    }
+
 
     @BindView(R.id.llContent)
     LinearLayout mLlContent;
@@ -63,6 +60,10 @@ public class MyChatActivity extends MVPBaseActivity<MyChatContract.View, MyChatP
 
     private EmotionKeyboard mEmotionKeyboard;
 
+    @Override
+    protected int getLayoutId() {
+        return R.layout.activity_wx_session;
+    }
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -265,6 +266,7 @@ public class MyChatActivity extends MVPBaseActivity<MyChatContract.View, MyChatP
 
     @Override
     public void onStickerSelected(String categoryName, String stickerName, String stickerBitmapPath) {
+        //返回点击的表情路径
         Toast.makeText(getApplicationContext(), stickerBitmapPath, Toast.LENGTH_SHORT).show();
         Log.e("CSDN_LQR", "stickerBitmapPath : " + stickerBitmapPath);
     }

@@ -14,9 +14,15 @@
         android:layout_weight="1"
         android:orientation="vertical">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="测试测试"
+            android:background="@color/white"/>
         <ListView
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:background="@color/colorTheme"
             android:layout_weight="1"/>
 
         <View
