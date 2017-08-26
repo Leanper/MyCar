@@ -34,4 +34,9 @@
     <string name="type_video">[视频]</string>
     <string name="type_custom">[自定义消息]</string>
     <string name="group_notification">[群成员变动]</string>
+
+    <string name="please_to_talk">按住 说话</string>
+    <string name="shot">拍摄</string>
+    <string name="location">位置</string>
+    <string name="red_pack">红包</string>
 </resources>

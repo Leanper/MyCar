@@ -146,7 +146,11 @@
     <!-- 黑色 -->
     <color name="black">#000000</color>
     <color name="gray">#808080</color>
-
+    <color name="gray1">#7e7e7e</color>
+    <color name="gray2">#969696</color>
+    <color name="gray3">#c8969696</color>
+    <color name="gray4">#F5F5F5</color>
+    <color name="gray5">#EBEBEB</color>
     <!-- 灰色 -->
 
     <color name="grey">#808080</color>
@@ -170,4 +174,6 @@
 
     <color name="light_blue">#8CA4FF</color>
 
+    <color name="green1">#45C01A</color>
+    <color name="green2">#A3DEA3</color>
 </resources>
