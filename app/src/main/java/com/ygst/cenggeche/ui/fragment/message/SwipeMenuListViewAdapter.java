@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.utils.LogUtils;
 import com.ygst.cenggeche.R;
-
+import com.ygst.cenggeche.ui.view.XCRoundImageView;
 import java.util.List;
 
 import cn.jmessage.android.uikit.chatting.utils.TimeFormat;
@@ -71,7 +71,6 @@ public class SwipeMenuListViewAdapter extends BaseAdapter {
 
 //        String contentStr = ((TextContent) lastMsg.getContent()).getText();
 
-        LogUtils.i("SwipeMenuListViewAdapter", "会话名称：" + convItem.getTitle());
         //获取头像
         setHeadIcon(convItem);
         //会话的名称

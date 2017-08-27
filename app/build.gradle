@@ -174,5 +174,7 @@ dependencies {
     compile 'cn.jiguang.sdk:jcore:1.1.6'
     //一个图片缓存库
     compile files('libs/picasso-2.4.0.jar')
-    compile files('libs/universal-image-loader-1.9.5.jar')
+
+    //一个表情包库
+    compile 'com.lqr.emoji:library:1.0.2'
 }
