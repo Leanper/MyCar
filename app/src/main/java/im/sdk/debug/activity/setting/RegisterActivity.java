@@ -70,7 +70,7 @@ public class RegisterActivity extends Activity {
     }
 
     private void initView() {
-        setContentView(R.layout.activity_register);
+        setContentView(R.layout.activity_register_j);
         mEd_userName = (EditText) findViewById(R.id.ed_register_username);
         mEd_password = (EditText) findViewById(R.id.ed_register_password);
         mBt_register = (Button) findViewById(R.id.bt_register);

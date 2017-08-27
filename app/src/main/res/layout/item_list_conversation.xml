@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:layout_marginLeft="5dp">
 
-        <com.ygst.cenggeche.ui.view.XCRoundImageView
+        <cn.jmessage.android.uikit.chatting.CircleImageView
             android:id="@+id/iv_avatar"
             android:layout_width="40dp"
             android:layout_height="40dp"
@@ -46,8 +46,8 @@
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@+id/tv_last_time"
                 android:text="小明"
-                android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textColor="@color/butaihei"
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/tv_last_time"
@@ -72,7 +72,18 @@
                 android:layout_height="wrap_content"
                 android:text="小明是个傻逼"
                 android:textColor="@color/gray"
-                android:textSize="14sp" />
+                android:textSize="12sp" />
+
+            <TextView
+                android:id="@+id/tv_unread_count"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_alignParentRight="true"
+                android:gravity="center"
+                android:text="99"
+                android:textColor="@color/white"
+                android:background="@mipmap/icon_circle_red"
+                android:textSize="10sp" />
         </RelativeLayout>
     </LinearLayout>
 

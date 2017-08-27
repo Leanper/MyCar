@@ -9,6 +9,7 @@ import com.umeng.analytics.MobclickAgent;
 import com.ygst.cenggeche.R;
 import com.ygst.cenggeche.ui.activity.base.BaseActivity;
 import com.ygst.cenggeche.ui.activity.login.LoginActivity;
+import com.ygst.cenggeche.ui.activity.register.RegisterActivity;
 import com.ygst.cenggeche.utils.CommonUtils;
 
 import butterknife.BindView;
@@ -16,7 +17,6 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.model.UserInfo;
-import im.sdk.debug.RegisterAndLoginActivity;
 
 
 public class SplashActivity extends BaseActivity {
@@ -71,8 +71,8 @@ public class SplashActivity extends BaseActivity {
         initData();
     }
     public void btnJChat(View view){
-
-        CommonUtils.startActivity(this, com.jarek.imageselect.activity.MainActivity.class);
+        toIMActivity();
+//        CommonUtils.startActivity(this, com.jarek.imageselect.activity.MainActivity.class);
     }
 
     private void initData() {
@@ -89,7 +89,7 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void toIMActivity(){
-        CommonUtils.startActivity(this, RegisterAndLoginActivity.class);
+        CommonUtils.startActivity(this, RegisterActivity.class);
         finish();
     }
 

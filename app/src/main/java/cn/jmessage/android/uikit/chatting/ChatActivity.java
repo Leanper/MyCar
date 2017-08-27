@@ -26,11 +26,11 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.jarek.imageselect.activity.FolderListActivity;
 import com.jarek.imageselect.bean.ImageFolderBean;
-import com.ygst.cenggeche.utils.AndroidBug5497Workaround;
 import com.ygst.cenggeche.utils.JChatUtils;
 import com.ygst.cenggeche.utils.ToastUtil;
 
@@ -111,7 +111,12 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
 
     Window mWindow;
     InputMethodManager mImm;
+    AdapterView.OnItemClickListener mOnItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+        }
+    };
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -177,7 +182,8 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
             mChatView.setInputText(draft);
         }
         mChatView.setChatListAdapter(mChatAdapter);
-
+        //单条消息点击事件
+        mChatView.setListItemClickListener(mOnItemClickListener);
 
         mChatAdapter.initMediaPlayer();
         //监听下拉刷新

@@ -10,6 +10,8 @@ import retrofit2.http.Field;
 import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
+import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
@@ -28,10 +30,14 @@ public interface ProjectAPI {
     @GET
     Observable<String> getMethod(@Url String url);
 
+    @Headers({"os:android"})
+    @FormUrlEncoded
+    @POST
+    Observable<String> postMethod(@Header("deviceId")String deviceId,@Header("uid")String uid,@Header("sign")String sign,@Url String url, @FieldMap Map<String, String> map);
+
     @FormUrlEncoded
     @POST
     Observable<String> postMethod(@Url String url, @FieldMap Map<String, String> map);
-
 
     @FormUrlEncoded
     @POST

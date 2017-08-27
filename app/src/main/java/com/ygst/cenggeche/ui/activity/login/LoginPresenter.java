@@ -29,7 +29,7 @@ public class LoginPresenter extends BasePresenterImpl<LoginContract.View> implem
     @Override
     public void getSMSCode(String phone) throws Exception {
 
-        HttpManager.getHttpManager().getMethod(UrlUtils.GET_SMSCODE_MERCHANT + "?phone=" + phone, new Observer<String>() {
+        HttpManager.getHttpManager().getMethod(UrlUtils.GET_SMS_CODE + "?phone=" + phone, new Observer<String>() {
             @Override
             public void onCompleted() {
 
@@ -72,7 +72,7 @@ public class LoginPresenter extends BasePresenterImpl<LoginContract.View> implem
         map.put("registration_id",registration_id);
         map.put("sign", sign);
 //       +"?phone="+phone+"&smsCode="+code+"&sign="+sign
-        HttpManager.getHttpManager().postMethod(UrlUtils.CHECK_LOGIN_MERCHANT, new Observer<String>() {
+        HttpManager.getHttpManager().postMethod(UrlUtils.CHECK_SMS_CODE, new Observer<String>() {
 
             @Override
             public void onCompleted() {

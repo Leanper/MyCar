@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.blankj.utilcode.utils.LogUtils;
 import com.ygst.cenggeche.R;
-import com.ygst.cenggeche.ui.view.XCRoundImageView;
 
 import java.util.List;
 
@@ -72,20 +71,27 @@ public class SwipeMenuListViewAdapter extends BaseAdapter {
 
 //        String contentStr = ((TextContent) lastMsg.getContent()).getText();
 
-        UserInfo userInfo = (UserInfo) convItem.getTargetInfo();
         LogUtils.i("SwipeMenuListViewAdapter", "会话名称：" + convItem.getTitle());
         //获取头像
         setHeadIcon(convItem);
         //会话的名称
         holder.mTVtargetName.setText(convItem.getTitle());
+        //最新对话内容
         holder.mTVlatestMessage.setText(contentStr);
-        //会话界面时间
-        holder.mTVlastTime.setText(lastTime);
-        if (convItem.getType().equals(ConversationType.single)) {
-
-        } else {
-            GroupInfo groupInfo = (GroupInfo) convItem.getTargetInfo();
+        //单个会话未读消息数
+        if(convItem.getUnReadMsgCnt()>0){
+            holder.mTVunreadCount.setVisibility(View.VISIBLE);
+            holder.mTVunreadCount.setText(""+convItem.getUnReadMsgCnt());
+        }else {
+            holder.mTVunreadCount.setVisibility(View.GONE);
         }
+        //最后会话时间
+        holder.mTVlastTime.setText(lastTime);
+//        if (convItem.getType().equals(ConversationType.single)) {
+//
+//        } else {
+//            GroupInfo groupInfo = (GroupInfo) convItem.getTargetInfo();
+//        }
         return convertView;
     }
 
@@ -143,12 +149,14 @@ public class SwipeMenuListViewAdapter extends BaseAdapter {
         if (convItem.getType().equals(ConversationType.single)) {
             UserInfo mUserInfo = (UserInfo) convItem.getTargetInfo();
             if (mUserInfo != null) {
-                //显示性别
-                if (mUserInfo.getGender().equals(UserInfo.Gender.female)) {
-                    holder.mIVgender.setImageResource(R.mipmap.icon_girl);
-                } else if (mUserInfo.getGender().equals(UserInfo.Gender.female)) {
-                    holder.mIVgender.setImageResource(R.mipmap.icon_boy);
-                } else {
+                if(mUserInfo.getGender()!=null) {
+                    //显示性别
+                    if (mUserInfo.getGender().equals(UserInfo.Gender.female)) {
+                        holder.mIVgender.setImageResource(R.mipmap.icon_girl);
+                    } else if (mUserInfo.getGender().equals(UserInfo.Gender.female)) {
+                        holder.mIVgender.setImageResource(R.mipmap.icon_boy);
+                    } else {
+                    }
                 }
                 //显示头像
                 mUserInfo.getAvatarBitmap(new GetAvatarBitmapCallback() {
@@ -174,7 +182,7 @@ public class SwipeMenuListViewAdapter extends BaseAdapter {
     class ViewHolder {
 
         //头像
-        XCRoundImageView mIVavatar;
+        ImageView mIVavatar;
         //性别
         ImageView mIVgender;
         //目标用户名称
@@ -183,13 +191,16 @@ public class SwipeMenuListViewAdapter extends BaseAdapter {
         TextView mTVlatestMessage;
         //最后会话时间
         TextView mTVlastTime;
+        //未读消息数
+        TextView mTVunreadCount;
 
         public ViewHolder(View view) {
-            mIVavatar = (XCRoundImageView) view.findViewById(R.id.iv_avatar);
+            mIVavatar = (ImageView) view.findViewById(R.id.iv_avatar);
             mIVgender = (ImageView) view.findViewById(R.id.iv_gender);
             mTVtargetName = (TextView) view.findViewById(R.id.tv_target_name);
             mTVlatestMessage = (TextView) view.findViewById(R.id.tv_latest_message);
             mTVlastTime = (TextView) view.findViewById(R.id.tv_last_time);
+            mTVunreadCount = (TextView) view.findViewById(R.id.tv_unread_count);
             view.setTag(this);
         }
     }

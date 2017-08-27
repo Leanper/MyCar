@@ -14,6 +14,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.blankj.utilcode.utils.LogUtils;
 import com.ygst.cenggeche.R;
 import com.ygst.cenggeche.ui.activity.base.BaseActivity;
 import com.ygst.cenggeche.ui.activity.friendlist.FriendListActivity;
@@ -126,7 +127,8 @@ public class MainActivity extends BaseActivity {
     ImageView mImageViewMessage;
     @BindView(R.id.tv_message)
     TextView mTextViewMessage;
-
+    @BindView(R.id.tv_all_unread_count)
+    TextView mTextViewAllUnreadCount;
     //消息点击事件
     @OnClick(R.id.rl_message)
     public void onClickMessage() {
@@ -193,20 +195,37 @@ public class MainActivity extends BaseActivity {
         ButterKnife.bind(this);
         setToolBar(mToolbar, "", false);
         JMessageClient.registerEventReceiver(this);
+        init();
+    }
+    private void init(){
         //默认为“蹭车”页面
         setOnClickMenu(R.id.rl_cengche);
-    }
-
-    @Override
-    protected void onPause() {
-        JCoreInterface.onPause(this);
-        super.onPause();
     }
 
     @Override
     protected void onResume() {
         JCoreInterface.onResume(this);
         super.onResume();
+        showAllUnReadMsgCount();
+    }
+    /**
+     * 显示全部未读消息数
+     */
+    private void showAllUnReadMsgCount(){
+        LogUtils.i(TAG,"-----未读消息数："+JMessageClient.getAllUnReadMsgCount());
+        if(JMessageClient.getAllUnReadMsgCount()>0) {
+            mTextViewAllUnreadCount.setVisibility(View.VISIBLE);
+            mTextViewAllUnreadCount.setText(""+JMessageClient.getAllUnReadMsgCount());
+        }else {
+            mTextViewAllUnreadCount.setVisibility(View.GONE);
+        }
+    }
+
+
+    @Override
+    protected void onPause() {
+        JCoreInterface.onPause(this);
+        super.onPause();
     }
 
     @Override
@@ -341,7 +360,7 @@ public class MainActivity extends BaseActivity {
      * @param event
      */
     public void onEvent(NotificationClickEvent event) {
-
+        LogUtils.i(TAG,"onEvent-----通知栏点击事件实体类NotificationClickEvent");
         Message msg = event.getMessage();
 
         final Intent notificationIntent = new Intent(getApplicationContext(), ShowMessageActivity.class);
@@ -438,10 +457,11 @@ public class MainActivity extends BaseActivity {
 
     /**
      * 消息事件实体类 MessageEvent
-     *
+     *(之前是onEvent(),改成了onEventMainThread()主线程模式)
      * @param event
      */
-    public void onEvent(MessageEvent event) {
+    public void onEventMainThread(MessageEvent event) {
+        showAllUnReadMsgCount();
         Message msg = event.getMessage();
         switch (msg.getContentType()) {
             case custom:
@@ -492,7 +512,6 @@ public class MainActivity extends BaseActivity {
                 startActivity(intentNotification);
                 break;
             case image:
-
                 final Intent intentImage = new Intent(getApplicationContext(), ShowDownloadPathActivity.class);
                 final ImageContent imageContent = (ImageContent) msg.getContent();
                 //其实sdk是会自动下载缩略图的.本方法是当sdk自动下载失败时可以手动调用进行下载而设计的.同理于语音下载
@@ -537,6 +556,7 @@ public class MainActivity extends BaseActivity {
      * @param event
      */
     public void onEvent(ContactNotifyEvent event) {
+        LogUtils.i(TAG,"onEvent-----新增联系人相关通知事件ContactNotifyEvent");
         String reason = event.getReason();
         String fromUsername = event.getFromUsername();
         String appkey = event.getfromUserAppKey();
@@ -577,6 +597,7 @@ public class MainActivity extends BaseActivity {
      * @param event
      */
     public void onEvent(LoginStateChangeEvent event) {
+        LogUtils.i(TAG,"onEvent-----用户下线事件UserLogoutEvent (已过时，请使用LoginStateChangeEvent代替)");
         LoginStateChangeEvent.Reason reason = event.getReason();
         UserInfo myInfo = event.getMyInfo();
         Intent intent = new Intent(getApplicationContext(), ShowLogoutReasonActivity.class);
@@ -590,6 +611,7 @@ public class MainActivity extends BaseActivity {
      * @param event
      */
     public void onEventMainThread(OfflineMessageEvent event) {
+        LogUtils.i(TAG,"onEvent----- 离线消息事件实体类 OfflineMessageEvent Since 2.1.0");
         Conversation conversation = event.getConversation();
         List<Message> newMessageList = event.getOfflineMessageList();//获取此次离线期间会话收到的新消息列表
         List<Integer> offlineMsgIdList = new ArrayList<>();
@@ -610,6 +632,7 @@ public class MainActivity extends BaseActivity {
      * @param event
      */
     public void onEventMainThread(ConversationRefreshEvent event) {
+        LogUtils.i(TAG,"onEvent-----会话刷新事件实体类ConversationRefreshEvent");
         Conversation conversation = event.getConversation();
         ConversationRefreshEvent.Reason reason = event.getReason();
         if (conversation != null) {
@@ -626,6 +649,7 @@ public class MainActivity extends BaseActivity {
      * @param event
      */
     public void onEvent(MyInfoUpdatedEvent event) {
+        LogUtils.i(TAG,"onEvent-----当前登录用户信息被更新事件实体类 MyInfoUpdatedEvent");
         UserInfo myInfo = event.getMyInfo();
         Intent intent = new Intent(this, ShowMyInfoUpdateActivity.class);
         intent.putExtra(INFO_UPDATE, myInfo.getUserName());

@@ -33,6 +33,11 @@ import cn.jpush.im.android.api.JMessageClient;
  */
 
 public class MyApplication extends Application {
+
+    public static String deviceId;
+    public static String os = "android";
+    public static String sign;
+
     private static final String IS_LOGIN_ED = "isLoginEd";
     private static final String IS_NOTIFICATION = "isNotification";
     private static final String IS_OWNER = "isOwner";
@@ -302,7 +307,6 @@ public class MyApplication extends Application {
         }
         System.out.println("获取context：etApplicationContext()");
         mContext = getApplicationContext();
-
         handler = new Handler();//创建Handle
         mainThreadId = Process.myTid();//得到主线程id
         isLoginEd = SharedPreferencesUtils.getBoolean(IS_LOGIN_ED, false);

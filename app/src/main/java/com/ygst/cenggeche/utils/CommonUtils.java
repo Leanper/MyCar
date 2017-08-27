@@ -394,7 +394,7 @@ public class CommonUtils {
     }
 
     //  获取设备的唯一ID
-    public static String getIMEI(Context context) {
+    public static final String getIMEI(Context context) {
    /*     TelephonyManager TelephonyMgr = (TelephonyManager) context.getSystemService(context.TELEPHONY_SERVICE);
         String szImei = TelephonyMgr.getDeviceId();*/
 

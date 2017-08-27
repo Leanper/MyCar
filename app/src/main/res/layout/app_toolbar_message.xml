@@ -31,7 +31,7 @@
         android:paddingRight="10dp"
         android:layout_centerVertical="true"
         android:textColor="@color/white"
-        android:textSize="18sp"
+        android:textSize="14sp"
         android:text="我的蹭友"/>
     <!--<ImageView-->
         <!--android:id="@+id/iv_title_menu_right"-->

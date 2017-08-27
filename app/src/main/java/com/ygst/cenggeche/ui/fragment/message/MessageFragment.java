@@ -30,6 +30,7 @@ import butterknife.ButterKnife;
 import cn.jmessage.android.uikit.chatting.ChatActivity;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.android.api.enums.ConversationType;
+import cn.jpush.im.android.api.event.MessageEvent;
 import cn.jpush.im.android.api.model.Conversation;
 import cn.jpush.im.android.api.model.GroupInfo;
 import cn.jpush.im.android.api.model.UserInfo;
@@ -84,6 +85,7 @@ public class MessageFragment extends MVPBaseFragment<MessageContract.View, Messa
         LogUtils.i(TAG, "------------onCreate");
         //生命周期2：onCreate()；
         super.onCreate(savedInstanceState);
+        JMessageClient.registerEventReceiver(this);
         mContext = this.getActivity();
     }
 
@@ -103,6 +105,12 @@ public class MessageFragment extends MVPBaseFragment<MessageContract.View, Messa
         super.onResume();
         LogUtils.i(TAG, "------------onResume");
         initDate();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        JMessageClient.unRegisterEventReceiver(this);
     }
 
     private EditText mEditTextTargetId;
@@ -224,5 +232,18 @@ public class MessageFragment extends MVPBaseFragment<MessageContract.View, Messa
     private int dp2px(int dp) {
         return (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp,
                 getResources().getDisplayMetrics());
+    }
+
+
+    /**
+     * 消息事件实体类 MessageEvent
+     *(之前是onEvent(),改成了onEventMainThread()主线程模式)
+     * @param event
+     */
+    public void onEventMainThread(MessageEvent event) {
+        if(mSwipeMenuListViewAdapter!=null){
+            //刷新消息列表
+            mSwipeMenuListViewAdapter.notifyDataSetChanged();
+        }
     }
 }
