@@ -3,6 +3,7 @@ package com.ygst.cenggeche.ui.fragment.message;
 import com.ygst.cenggeche.mvp.BasePresenter;
 import com.ygst.cenggeche.mvp.BaseView;
 
+import cn.jpush.im.android.api.enums.ConversationType;
 import cn.jpush.im.android.api.model.Conversation;
 
 /**
@@ -13,7 +14,7 @@ import cn.jpush.im.android.api.model.Conversation;
 public class MessageContract {
     interface View extends BaseView {
 
-        void getDeleteConversationSuccess(String type,int position);
+        void getDeleteConversationSuccess(ConversationType type, int position);
 
         void getDeleteConversationError();
     }

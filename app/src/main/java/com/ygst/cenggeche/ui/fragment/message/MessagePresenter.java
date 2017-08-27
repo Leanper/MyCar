@@ -22,7 +22,7 @@ public class MessagePresenter extends BasePresenterImpl<MessageContract.View> im
             String targetId = ((UserInfo) conversation.getTargetInfo()).getUserName();
             deleteBoolean = JMessageClient.deleteSingleConversation(targetId, conversation.getTargetAppKey());
             if (deleteBoolean) {
-                mView.getDeleteConversationSuccess("single",position);
+                mView.getDeleteConversationSuccess(ConversationType.single,position);
             }else{
                 mView.getDeleteConversationError();
             }
@@ -30,7 +30,7 @@ public class MessagePresenter extends BasePresenterImpl<MessageContract.View> im
             long groupID = ((GroupInfo) conversation.getTargetInfo()).getGroupID();
             deleteBoolean =JMessageClient.deleteGroupConversation(groupID);
             if (deleteBoolean) {
-                mView.getDeleteConversationSuccess("group",position);
+                mView.getDeleteConversationSuccess(ConversationType.group,position);
             }else{
                 mView.getDeleteConversationError();
             }

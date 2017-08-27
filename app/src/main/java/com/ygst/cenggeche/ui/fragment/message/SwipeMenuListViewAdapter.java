@@ -9,9 +9,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.blankj.utilcode.utils.LogUtils;
 import com.ygst.cenggeche.R;
-import com.ygst.cenggeche.ui.view.XCRoundImageView;
+
 import java.util.List;
 
 import cn.jmessage.android.uikit.chatting.utils.TimeFormat;
@@ -33,8 +32,6 @@ public class SwipeMenuListViewAdapter extends BaseAdapter {
 
     List<Conversation> mListConversation;
     Context mContext;
-    String lastTime;
-    ViewHolder holder;
 
     public SwipeMenuListViewAdapter(Context context, List<Conversation> list) {
         mContext = context;
@@ -63,29 +60,9 @@ public class SwipeMenuListViewAdapter extends BaseAdapter {
                     R.layout.item_list_conversation, null);
             new ViewHolder(convertView);
         }
-        holder = (ViewHolder) convertView.getTag();
-
+        ViewHolder holder = (ViewHolder) convertView.getTag();
         Conversation convItem = mListConversation.get(position);
-        Message lastMsg = convItem.getLatestMessage();
-        String contentStr = getLastMag(lastMsg);
-
-//        String contentStr = ((TextContent) lastMsg.getContent()).getText();
-
-        //获取头像
-        setHeadIcon(convItem);
-        //会话的名称
-        holder.mTVtargetName.setText(convItem.getTitle());
-        //最新对话内容
-        holder.mTVlatestMessage.setText(contentStr);
-        //单个会话未读消息数
-        if(convItem.getUnReadMsgCnt()>0){
-            holder.mTVunreadCount.setVisibility(View.VISIBLE);
-            holder.mTVunreadCount.setText(""+convItem.getUnReadMsgCnt());
-        }else {
-            holder.mTVunreadCount.setVisibility(View.GONE);
-        }
-        //最后会话时间
-        holder.mTVlastTime.setText(lastTime);
+        setItemView(holder, convItem);
 //        if (convItem.getType().equals(ConversationType.single)) {
 //
 //        } else {
@@ -94,12 +71,18 @@ public class SwipeMenuListViewAdapter extends BaseAdapter {
         return convertView;
     }
 
-
-    private String getLastMag(Message lastMsg) {
+    /**
+     * 给单行消息填充数据
+     * @param holder
+     * @param convItem
+     */
+    private void setItemView(final ViewHolder holder, final Conversation convItem) {
+        Message lastMsg = convItem.getLatestMessage();
         String contentStr = "";
         if (lastMsg != null) {
             TimeFormat timeFormat = new TimeFormat(mContext, lastMsg.getCreateTime());
-            lastTime = timeFormat.getTime();
+            //最后会话时间
+            holder.mTVlastTime.setText(timeFormat.getTime());
             switch (lastMsg.getContentType()) {
                 case image:
                     contentStr = mContext.getString(R.string.type_picture);
@@ -139,16 +122,12 @@ public class SwipeMenuListViewAdapter extends BaseAdapter {
                 default:
                     contentStr = ((TextContent) lastMsg.getContent()).getText();
             }
-
         }
-        return contentStr;
-    }
 
-    private void setHeadIcon(Conversation convItem) {
         if (convItem.getType().equals(ConversationType.single)) {
-            UserInfo mUserInfo = (UserInfo) convItem.getTargetInfo();
+            final UserInfo mUserInfo = (UserInfo) convItem.getTargetInfo();
             if (mUserInfo != null) {
-                if(mUserInfo.getGender()!=null) {
+                if (mUserInfo.getGender() != null) {
                     //显示性别
                     if (mUserInfo.getGender().equals(UserInfo.Gender.female)) {
                         holder.mIVgender.setImageResource(R.mipmap.icon_girl);
@@ -176,6 +155,17 @@ public class SwipeMenuListViewAdapter extends BaseAdapter {
             holder.mIVavatar.setImageResource(R.drawable.group);
         }
 
+        //会话的名称
+        holder.mTVtargetName.setText(convItem.getTitle());
+        //最新对话内容
+        holder.mTVlatestMessage.setText(contentStr);
+        //单个会话未读消息数
+        if (convItem.getUnReadMsgCnt() > 0) {
+            holder.mTVunreadCount.setVisibility(View.VISIBLE);
+            holder.mTVunreadCount.setText("" + convItem.getUnReadMsgCnt());
+        } else {
+            holder.mTVunreadCount.setVisibility(View.GONE);
+        }
     }
 
     class ViewHolder {
@@ -190,6 +180,7 @@ public class SwipeMenuListViewAdapter extends BaseAdapter {
         TextView mTVlatestMessage;
         //最后会话时间
         TextView mTVlastTime;
+
         //未读消息数
         TextView mTVunreadCount;
 

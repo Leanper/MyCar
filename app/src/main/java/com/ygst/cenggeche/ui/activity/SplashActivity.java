@@ -9,6 +9,7 @@ import com.umeng.analytics.MobclickAgent;
 import com.ygst.cenggeche.R;
 import com.ygst.cenggeche.ui.activity.base.BaseActivity;
 import com.ygst.cenggeche.ui.activity.login.LoginActivity;
+import com.ygst.cenggeche.ui.activity.register.RegisterActivity;
 import com.ygst.cenggeche.utils.CommonUtils;
 
 import butterknife.BindView;
@@ -70,7 +71,9 @@ public class SplashActivity extends BaseActivity {
         initData();
     }
     public void btnJChat(View view){
-        CommonUtils.startActivity(this, com.jarek.imageselect.activity.MainActivity.class);    }
+        toIMActivity();
+//        CommonUtils.startActivity(this, com.jarek.imageselect.activity.MainActivity.class);
+    }
 
     private void initData() {
         //检测账号是否登陆

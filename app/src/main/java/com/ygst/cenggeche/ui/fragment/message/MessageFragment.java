@@ -17,6 +17,7 @@ import android.widget.EditText;
 import com.blankj.utilcode.utils.LogUtils;
 import com.ygst.cenggeche.R;
 import com.ygst.cenggeche.mvp.MVPBaseFragment;
+import com.ygst.cenggeche.ui.activity.MainActivity;
 import com.ygst.cenggeche.ui.view.swipemenulistview.SwipeMenu;
 import com.ygst.cenggeche.ui.view.swipemenulistview.SwipeMenuCreator;
 import com.ygst.cenggeche.ui.view.swipemenulistview.SwipeMenuItem;
@@ -52,20 +53,20 @@ public class MessageFragment extends MVPBaseFragment<MessageContract.View, Messa
         @Override
         public void create(SwipeMenu menu) {
             //添加了一个Open侧滑按钮
-            SwipeMenuItem openItem = new SwipeMenuItem(getActivity().getApplicationContext());
+            SwipeMenuItem isReadItem = new SwipeMenuItem(getActivity().getApplicationContext());
             // set item background
-            openItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
+            isReadItem.setBackground(new ColorDrawable(Color.rgb(0xC9, 0xC9,
                     0xCE)));
             // set item width
-            openItem.setWidth(dp2px(90));
+            isReadItem.setWidth(dp2px(90));
             // set item title
-            openItem.setTitle("置顶");
+            isReadItem.setTitle("标为已读");
             // set item title fontsize
-            openItem.setTitleSize(18);
+            isReadItem.setTitleSize(18);
             // set item title font color
-            openItem.setTitleColor(Color.WHITE);
+            isReadItem.setTitleColor(Color.WHITE);
             // add to menu
-            menu.addMenuItem(openItem);
+            menu.addMenuItem(isReadItem);
 
             // 创建delete侧滑按钮
             SwipeMenuItem deleteItem = new SwipeMenuItem(getActivity().getApplicationContext());
@@ -104,7 +105,7 @@ public class MessageFragment extends MVPBaseFragment<MessageContract.View, Messa
     public void onResume() {
         super.onResume();
         LogUtils.i(TAG, "------------onResume");
-        initDate();
+        initConversationListView();
     }
 
     @Override
@@ -155,7 +156,7 @@ public class MessageFragment extends MVPBaseFragment<MessageContract.View, Messa
                 switch (index) {
                     case 0:
                         // open
-                        open(item);
+                        setIsRead(menu,item);
                         break;
                     case 1:
                         // delete删除某个会话
@@ -198,12 +199,17 @@ public class MessageFragment extends MVPBaseFragment<MessageContract.View, Messa
         });
     }
 
-    private void open(Conversation item) {
-
+    private void setIsRead(SwipeMenu menu,Conversation conversation) {
+        if(conversation.getUnReadMsgCnt()>0) {
+            conversation.setUnReadMessageCnt(0);
+        }
+        MainActivity mainActivity = (MainActivity ) getActivity();
+        mainActivity.showAllUnReadMsgCount();
+        mSwipeMenuListViewAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void getDeleteConversationSuccess(String type, int position) {
+    public void getDeleteConversationSuccess(ConversationType type, int position) {
         mListConversation.remove(position);
         mSwipeMenuListViewAdapter.notifyDataSetChanged();
         if (type.equals(ConversationType.single)) {
@@ -213,7 +219,7 @@ public class MessageFragment extends MVPBaseFragment<MessageContract.View, Messa
         }
     }
 
-    private void initDate(){
+    private void initConversationListView(){
         mListConversation = JMessageClient.getConversationList();
         mSwipeMenuListViewAdapter = new SwipeMenuListViewAdapter(getActivity(),mListConversation);
         if (mListConversation != null) {
@@ -241,9 +247,6 @@ public class MessageFragment extends MVPBaseFragment<MessageContract.View, Messa
      * @param event
      */
     public void onEventMainThread(MessageEvent event) {
-        if(mSwipeMenuListViewAdapter!=null){
-            //刷新消息列表
-            mSwipeMenuListViewAdapter.notifyDataSetChanged();
-        }
+        initConversationListView();
     }
 }

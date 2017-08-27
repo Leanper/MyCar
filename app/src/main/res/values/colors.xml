@@ -145,6 +145,9 @@
     <color name="jmui_translucent_background">#60000000</color>
     <!-- 黑色 -->
     <color name="black">#000000</color>
+
+
+    <color name="gray">#989898</color>
     <color name="gray1">#7e7e7e</color>
     <color name="gray2">#969696</color>
     <color name="gray3">#c8969696</color>

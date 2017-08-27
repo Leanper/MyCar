@@ -54,6 +54,8 @@
         <activity android:name=".ui.activity.register.RegisterActivity" />
         <!--注册信息页-->
         <activity android:name=".ui.activity.registerinfo.RegisterInfoActivity" />
+        <!--重置密码页-->
+        <activity android:name=".ui.activity.resetpwd.ResetPwdActivity" />
         <!--主界面-->
         <activity android:name=".ui.activity.MainActivity" />
         <!--自定义的聊天页-->
@@ -61,7 +63,6 @@
             android:theme="@style/BaseAppTheme" />
         <!--添加好友-->
         <activity android:name=".ui.activity.addfriend.AddFriendActivity" />
-
         <!--联系人列表-->
         <activity android:name=".ui.activity.friendlist.FriendListActivity" />
 

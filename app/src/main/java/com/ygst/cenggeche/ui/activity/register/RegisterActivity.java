@@ -1,6 +1,7 @@
 package com.ygst.cenggeche.ui.activity.register;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.Button;
@@ -54,7 +55,8 @@ public class RegisterActivity extends MVPBaseActivity<RegisterContract.View, Reg
     //下一步（校验验证码是否正确）
     @OnClick(R.id.btn_next)
     public void nextStep() {
-        mPresenter.checkSMSCode(mEtPhone.getText().toString(), mEtSmsCode.getText().toString());
+        CommonUtils.startActivity(this,RegisterInfoActivity.class);
+//        mPresenter.checkSMSCode(mEtPhone.getText().toString(), mEtSmsCode.getText().toString());
     }
 
     @Override
@@ -112,7 +114,10 @@ public class RegisterActivity extends MVPBaseActivity<RegisterContract.View, Reg
         timeCount.cancel();
         timeCount.onFinish();
 
-        CommonUtils.startActivity(this, RegisterInfoActivity.class);
+        Intent intent = new Intent();
+        intent.putExtra("username",mEtPhone.getText().toString());
+        intent.setClass(this,RegisterInfoActivity.class);
+        startActivity(intent);
         CommonUtils.finishActivity(this);
     }
 

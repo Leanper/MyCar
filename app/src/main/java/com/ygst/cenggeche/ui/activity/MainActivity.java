@@ -211,8 +211,7 @@ public class MainActivity extends BaseActivity {
     /**
      * 显示全部未读消息数
      */
-    private void showAllUnReadMsgCount(){
-        LogUtils.i(TAG,"-----未读消息数："+JMessageClient.getAllUnReadMsgCount());
+    public void showAllUnReadMsgCount(){
         if(JMessageClient.getAllUnReadMsgCount()>0) {
             mTextViewAllUnreadCount.setVisibility(View.VISIBLE);
             mTextViewAllUnreadCount.setText(""+JMessageClient.getAllUnReadMsgCount());
