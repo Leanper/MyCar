@@ -117,7 +117,7 @@ public class TokenInterceptor implements Interceptor {
     private String getNewToken() throws IOException {
         Log.i("TAG", "getNewToken: +++++++++++++++");
         Map map = new HashMap();
-        map.put("userId", MyApplication.getUserId());
+        map.put("uid", MyApplication.getUid());
         if (MyApplication.getAndroidId() != null) {
             map.put("deviceId", MyApplication.getAndroidId());
         }

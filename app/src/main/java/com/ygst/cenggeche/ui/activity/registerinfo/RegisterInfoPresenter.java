@@ -5,7 +5,8 @@ import android.app.ProgressDialog;
 import com.blankj.utilcode.utils.LogUtils;
 import com.google.gson.Gson;
 import com.ygst.cenggeche.app.MyApplication;
-import com.ygst.cenggeche.bean.UserBean;
+import com.ygst.cenggeche.bean.CodeBean;
+import com.ygst.cenggeche.bean.LoginBean;
 import com.ygst.cenggeche.manager.HttpManager;
 import com.ygst.cenggeche.mvp.BasePresenterImpl;
 import com.ygst.cenggeche.utils.CommonUtils;
@@ -27,7 +28,7 @@ public class RegisterInfoPresenter extends BasePresenterImpl<RegisterInfoContrac
 
     private String TAG = "RegisterInfoPresenter";
     @Override
-    public void registrationConfirm(UserBean userBean) {
+    public void registrationConfirm(LoginBean.DataBean userBean) {
 
         final ProgressDialog progressDialog = CommonUtils.showProgressDialog(mView.getContext(), "正在写入注册信息");
         String password = MD5Util.string2MD5(userBean.getPassword()+ UrlUtils.KEY);
@@ -36,7 +37,7 @@ public class RegisterInfoPresenter extends BasePresenterImpl<RegisterInfoContrac
         map.put("password",password);
         map.put("nickname",userBean.getNickname());
         map.put("birthday", userBean.getBirthday());
-        map.put("gender", userBean.getGender());
+        map.put("gender", userBean.getGender()+"");
         map.put("registrationId", MyApplication.getRegistrationId());
         HttpManager.getHttpManager().postMethod(UrlUtils.REGIST, new Observer<String>() {
 
@@ -58,13 +59,13 @@ public class RegisterInfoPresenter extends BasePresenterImpl<RegisterInfoContrac
                 progressDialog.dismiss();
                 LogUtils.i(TAG, "onNext:+ ++++++++++++++" + s);
                 Gson gson = new Gson();
-                UserBean userBean =gson.fromJson(s, UserBean.class);
+                CodeBean codeBean =gson.fromJson(s, CodeBean.class);
 
-                if ("0000".equals(userBean.getCode())) {
+                if ("0000".equals(codeBean.getCode())) {
                     if (mView != null)
-                        mView.registrationSuccess(userBean);
+                        mView.registrationSuccess();
                 } else {
-                    ToastUtil.show(mView.getContext(), userBean.getMsg());
+                    ToastUtil.show(mView.getContext(), codeBean.getMsg());
                 }
             }
         }, map);

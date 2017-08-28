@@ -8,8 +8,8 @@ import com.blankj.utilcode.utils.LogUtils;
 import com.umeng.analytics.MobclickAgent;
 import com.ygst.cenggeche.R;
 import com.ygst.cenggeche.ui.activity.base.BaseActivity;
+import com.ygst.cenggeche.ui.activity.friendinfo.FriendInfoActivity;
 import com.ygst.cenggeche.ui.activity.login.LoginActivity;
-import com.ygst.cenggeche.ui.activity.register.RegisterActivity;
 import com.ygst.cenggeche.utils.CommonUtils;
 
 import butterknife.BindView;
@@ -89,7 +89,7 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void toIMActivity(){
-        CommonUtils.startActivity(this, RegisterActivity.class);
+        CommonUtils.startActivity(this, FriendInfoActivity.class);
         finish();
     }
 

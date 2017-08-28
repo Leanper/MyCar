@@ -3,6 +3,7 @@ package com.ygst.cenggeche.ui.activity.login;
 import android.app.ProgressDialog;
 import android.util.Log;
 
+import com.blankj.utilcode.utils.LogUtils;
 import com.google.gson.Gson;
 import com.ygst.cenggeche.bean.CodeBean;
 import com.ygst.cenggeche.bean.LoginBean;
@@ -25,6 +26,45 @@ import rx.Observer;
  */
 
 public class LoginPresenter extends BasePresenterImpl<LoginContract.View> implements LoginContract.Presenter {
+
+    private static String TAG = "LoginPresenter";
+    //校验用户是否注册
+    @Override
+    public void checkIsRegist(String username) {
+        Map<String, String> map = new HashMap<>();
+        map.put("username", username);
+        HttpManager.getHttpManager().postMethod(UrlUtils.CHECK_IS_REGIST, new Observer<String>() {
+
+            @Override
+            public void onCompleted() {
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                ToastUtil.show(mView.getContext(), "服务器出现问题，程序猿正在解决");
+                LogUtils.e(TAG,"返回的onError",e);
+            }
+
+            @Override
+            public void onNext(String s) {
+                LogUtils.i("HttpManager", "ssss:" + s);
+                Gson gson = new Gson();
+                CodeBean codeBean = gson.fromJson(s, CodeBean.class);
+                if ("0000".equals(codeBean.getCode())) {
+                    if (mView != null) {
+                        mView.unregistered();
+                    }
+                    ToastUtil.show(mView.getContext(), codeBean.getMsg());
+                } else {
+                    if (mView != null) {
+                        mView.registered();
+                    }
+                    ToastUtil.show(mView.getContext(), codeBean.getMsg());
+                }
+            }
+        }, map);
+    }
+
     //  获取验证码
     @Override
     public void getSMSCode(String phone) throws Exception {
@@ -60,19 +100,25 @@ public class LoginPresenter extends BasePresenterImpl<LoginContract.View> implem
 
     }
 
-    // 检查验证码是否输入成功
+    // 验证码登录
     @Override
-    public void checkSMSCode(String phone, String code, String registration_id) {
+    public void login(LoginBean loginBean,String checkType) {
 
         final ProgressDialog progressDialog = CommonUtils.showProgressDialog(mView.getContext(), "正在登录");
-        String sign = MD5Util.string2MD5(phone+code+UrlUtils.KEY);
         Map<String, String> map = new HashMap<>();
-        map.put("phone", phone);
-        map.put("smsCode",code);
-        map.put("registration_id",registration_id);
-        map.put("sign", sign);
-//       +"?phone="+phone+"&smsCode="+code+"&sign="+sign
-        HttpManager.getHttpManager().postMethod(UrlUtils.CHECK_SMS_CODE, new Observer<String>() {
+        map.put("username", loginBean.getData().getUsername());
+        map.put("checkType",checkType);
+        if(checkType.equals("1")){
+            //密码登录
+            String password = MD5Util.string2MD5(loginBean.getData().getPassword()+UrlUtils.KEY);
+            map.put("password",password);
+        }else{
+            //验证码登录
+            String smsCode = MD5Util.string2MD5(loginBean.getCode()+UrlUtils.KEY);
+            map.put("smsCode",smsCode);
+        }
+
+        HttpManager.getHttpManager().postMethod(UrlUtils.LOGIN, new Observer<String>() {
 
             @Override
             public void onCompleted() {
@@ -83,7 +129,7 @@ public class LoginPresenter extends BasePresenterImpl<LoginContract.View> implem
             public void onError(Throwable e) {
                 progressDialog.dismiss();
                 if (mView != null)
-                    mView.checkSMSCodeError();
+                    mView.loginError();
                 Log.i("checkSMSCodeError", "onError:+ ++++++++++++++" + e.toString());
             }
 
@@ -98,7 +144,7 @@ public class LoginPresenter extends BasePresenterImpl<LoginContract.View> implem
 
                 if ("0000".equals(loginBean.getCode())) {
                     if (mView != null)
-                        mView.checkSMSCodeSuccess(loginBean);
+                        mView.loginSuccess(loginBean);
                 } else {
                     ToastUtil.show(mView.getContext(), loginBean.getMsg());
                 }

@@ -1,17 +1,15 @@
 package com.ygst.cenggeche.ui.activity.login;
 
 
-import android.content.Intent;
+import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.umeng.analytics.MobclickAgent;
@@ -21,14 +19,16 @@ import com.ygst.cenggeche.bean.CodeBean;
 import com.ygst.cenggeche.bean.LoginBean;
 import com.ygst.cenggeche.mvp.MVPBaseActivity;
 import com.ygst.cenggeche.ui.activity.MainActivity;
+import com.ygst.cenggeche.ui.activity.register.RegisterActivity;
 import com.ygst.cenggeche.ui.widget.TimeCount;
 import com.ygst.cenggeche.utils.CommonUtils;
+import com.ygst.cenggeche.utils.JMessageUtils;
 import com.ygst.cenggeche.utils.TextViewUtils;
 import com.ygst.cenggeche.utils.ToastUtil;
-import com.ygst.cenggeche.webview.WebViewActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import cn.jpush.im.android.api.JMessageClient;
 import cn.jpush.im.api.BasicCallback;
 
@@ -38,52 +38,119 @@ import cn.jpush.im.api.BasicCallback;
  * 邮箱 784787081@qq.com
  */
 
-public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPresenter> implements LoginContract.View, View.OnClickListener {
+public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPresenter> implements LoginContract.View {
 
-    private EditText et_code, et_phone;
-    private Button bt_check, bt_getCode;
+    private String checkType = LoginBean.PWD_TO_LOGIN;
     private TimeCount timeCount;
-    private TextWatcher textWatch = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            //s:变化前的所有字符； start:字符开始的位置； count:变化前的总字节数；after:变化后的字节数
-            if (TextViewUtils.getText(et_code).length() >= 4) {
-                //设置按钮可点击
-                bt_check.setClickable(true);
-                //设置按钮为正常状态
-                bt_check.setPressed(true);
+
+    @BindView(R.id.tv_title)
+    TextView mTvTitle;
+    @BindView(R.id.et_username)
+    EditText mEtUserName;
+    @BindView(R.id.et_pwd_code)
+    EditText mEtPwdCode;
+    @BindView(R.id.tv_forgot_pwd)
+    TextView mTvForgotPwd;
+    @BindView(R.id.btn_getCode)
+    Button mBtnGetCode;
+
+    /**
+     * 返回
+     */
+    @OnClick(R.id.iv_back)
+    public void goBack(){
+        finish();
+    }
+
+    /**
+     * 获取验证码
+     */
+    @OnClick(R.id.btn_getCode)
+    public void getCode() {
+        String username = TextViewUtils.getText(mEtUserName);
+        final String pwdOrCode = TextViewUtils.getText(mEtPwdCode);
+        if (!TextUtils.isEmpty(username)) {
+            if (CommonUtils.isUserNumber(username)) {
+                try {
+                    mPresenter.getSMSCode(username);
+                    timeCount.start();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             } else {
-                bt_check.setClickable(false);
-                //设置按钮为按下状态
-                bt_check.setPressed(false);
+                CommonUtils.showInfoDialog(this, "请输入正确的手机号码");
+//                ToastUtil.show(this, "请输入正确的手机号码");
+            }
+        } else {
+//            CommonUtils.showInfoDialog(this, "请输入您的手机号码");
+            ToastUtil.show(this, "请输入您的手机号码");
+        }
+    }
+
+    @BindView(R.id.btn_login_type)
+    Button mBtnLoginType;
+
+    /**
+     * 切换登录方式
+     */
+    @OnClick(R.id.btn_login_type)
+    public void setLoginType() {
+        //如果本身是密码登录，点击切换成密码登录，反之同理
+        if (checkType.equals(LoginBean.PWD_TO_LOGIN)) {
+            //变成了验证码登录
+            checkType = LoginBean.CODE_TO_LOGIN;
+            mEtPwdCode.setHint("请输入验证码");
+            //输入框变成只能输入手机号的模式
+            mEtPwdCode.setInputType(EditorInfo.TYPE_CLASS_PHONE);
+            mBtnGetCode.setVisibility(View.VISIBLE);
+            mTvForgotPwd.setVisibility(View.GONE);
+            mBtnLoginType.setText("切换密码登录");
+        } else {
+            //变成了密码登录
+            checkType = LoginBean.PWD_TO_LOGIN;
+            mEtPwdCode.setHint("请输入密码");
+            mEtPwdCode.setInputType(EditorInfo.IME_ACTION_NONE);
+            mEtPwdCode.setInputType(EditorInfo.TYPE_CLASS_PHONE);
+            mBtnGetCode.setVisibility(View.GONE);
+            mTvForgotPwd.setVisibility(View.VISIBLE);
+            mBtnLoginType.setText("切换验证码登录");
+        }
+    }
+
+    /**
+     * 去登录
+     */
+    @OnClick(R.id.btn_login)
+    public void login() {
+        final String username = TextViewUtils.getText(mEtUserName);
+        final String pwdOrCode = TextViewUtils.getText(mEtPwdCode);
+
+        if (!TextUtils.isEmpty(username) && !TextUtils.isEmpty(pwdOrCode)) {
+            //先校验账号是否被注册,成功后在获取验证码
+            try {
+                mPresenter.checkIsRegist(username);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            if (checkType.equals(LoginBean.PWD_TO_LOGIN)) {
+//                CommonUtils.showInfoDialog(this, "手机号码或密码不能为空");
+                ToastUtil.show(this, "手机号码或密码不能为空");
+            } else {
+//                CommonUtils.showInfoDialog(this, "手机号码或验证码不能为空");
+                ToastUtil.show(this, "手机号码或验证码不能为空");
             }
         }
 
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            //S：变化后的所有字符；start：字符起始的位置；before: 变化之前的总字节数；count:变化后的字节数
-            if (TextViewUtils.getText(et_code).length() >= 4) {
-                //设置按钮可点击
-                bt_check.setClickable(true);
-                //设置按钮为正常状态
-                bt_check.setPressed(true);
-            } else {
-                bt_check.setClickable(false);
-                //设置按钮为按下状态
-                bt_check.setPressed(false);
-            }
+    }
 
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-            //s:变化后的所有字符
-
-        }
-    };
-
-    @BindView(R.id.toolbar)
-    Toolbar tbToolbar;
+    /**
+     * 去注册账号
+     */
+    @OnClick(R.id.tv_register)
+    public void register() {
+        CommonUtils.startActivity(this, RegisterActivity.class);
+    }
 
     @Override
     protected int getLayoutId() {
@@ -94,59 +161,55 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
-        setToolBar(tbToolbar, "登录", true);
         //找控件
         initView();
     }
 
     private void initView() {
+        mTvTitle.setText("登录");
         timeCount = new TimeCount(60000, 1000);
-        //验证码
-        et_code = (EditText) findViewById(R.id.et_code);
+        timeCount.setButton(mBtnGetCode);
+    }
 
-        et_code.setInputType(EditorInfo.TYPE_CLASS_PHONE);
-        //手机号码
-        et_phone = (EditText) findViewById(R.id.et_phone);
 
-        et_phone.setInputType(EditorInfo.TYPE_CLASS_PHONE);
-        //验证验证码
-        bt_check = (Button) findViewById(R.id.bt_login);
-        //获取验证码
-        bt_getCode = (Button) findViewById(R.id.bt_getCode);
-        findViewById(R.id.tv_tiaokuan).setOnClickListener(this);
-        bt_check.setOnClickListener(this);
-        bt_getCode.setOnClickListener(this);
-        bt_getCode.setClickable(false);
-        bt_check.setClickable(false);
-        timeCount.setButton(bt_getCode);
-        et_code.addTextChangedListener(textWatch);
-        et_phone.addTextChangedListener(new TextWatcher() {
+    /**
+     * 未注册，需先注册，才可登录
+     */
+    @Override
+    public void unregistered() {
+        CommonUtils.showInfoDialog(this, "账号未注册，请先注册","小蹭提示","前往","不去",new DialogInterface.OnClickListener(){
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+            public void onClick(DialogInterface dialog, int which) {
+                CommonUtils.startActivity(LoginActivity.this, RegisterActivity.class);
             }
+        },null);
+    }
 
+    /**
+     * 已注册，可以登录
+     */
+    @Override
+    public void registered() {
+        final String username = TextViewUtils.getText(mEtUserName);
+        final String pwdOrCode = TextViewUtils.getText(mEtPwdCode);
+        JMessageClient.login(username, JMessageUtils.JMESSAGE_LOGIN_PASSWROD, new BasicCallback() {
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!CommonUtils.isUserNumber(TextViewUtils.getText(et_phone))) {
-                    //设置按钮不可点击
-                    bt_getCode.setClickable(false);
-                    //设置按钮为按下状态
-                    bt_getCode.setPressed(false);
+            public void gotResult(int responseCode, String LoginDesc) {
+                if (responseCode == 0) {
+                    Toast.makeText(getApplicationContext(), "登录成功", Toast.LENGTH_SHORT).show();
+                    Log.i("MainActivity", "JMessageClient.login" + ", responseCode = " + responseCode + " ; LoginDesc = " + LoginDesc);
+                    LoginBean loginBean = new LoginBean();
+                    mPresenter.login(loginBean, checkType);
+//                                CommonUtils.startActivity(LoginActivity.this, MainActivity.class);
+//                                LoginActivity.this.finish();
                 } else {
-                    //设置按钮可点击
-                    bt_getCode.setClickable(true);
-                    //设置按钮为正常状态
-                    bt_getCode.setPressed(true);
+                    Toast.makeText(getApplicationContext(), "登录失败", Toast.LENGTH_SHORT).show();
+                    Log.i("MainActivity", "JMessageClient.login" + ", responseCode = " + responseCode + " ; LoginDesc = " + LoginDesc);
                 }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
             }
         });
     }
+
 
     @Override
     public void getSMSCodeSuccess(CodeBean codeBean) {
@@ -158,109 +221,29 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
         timeCount.cancel();
         timeCount.onFinish();
         ToastUtil.show(this, "获取验证码失败");
-        //设置按钮可点击
-        bt_getCode.setClickable(true);
-        //设置按钮为正常状态
-        bt_getCode.setPressed(true);
     }
 
     @Override
-    public void checkSMSCodeSuccess(LoginBean loginBean) {
+    public void loginSuccess(LoginBean loginBean) {
         ToastUtil.show(this, "登录成功");
         timeCount.cancel();
         timeCount.onFinish();
         MyApplication.clearLogin();
         // 储存登陆状态
         MyApplication.setIsLoginEd(true);
-        // 保存 uid
-        MyApplication.saveUserId(loginBean.getUser().getUid() + "");
-        // 保存 商家sid
-        MyApplication.saveId(loginBean.getUser().getId() + "");
-        // 保存商家用户名
-        MyApplication.saveStoreOwn(loginBean.getUser().getStoreOwn());
-        // 保存商家店名
-        MyApplication.saveStore(loginBean.getUser().getStore());
-        // 保存商家地址
-        MyApplication.saveStoreAddr(loginBean.getUser().getStoreAddr());
-        // 保存商家联系电话
-        MyApplication.savePhone(loginBean.getUser().getPhone());
 
         /**
          *开启友盟账号统计
-         * 使用第三方账号（如新浪微博）登录时
-         * MobclickAgent.onProfileSignIn("WB"，"userID");
+         * （如果是使用第三方账号登录时，如新浪微博：MobclickAgent.onProfileSignIn("WB"，"userID")）;
          */
-        MobclickAgent.onProfileSignIn(loginBean.getUser().getUid()+"");
+        MobclickAgent.onProfileSignIn(loginBean.getData().getId() + "");
         CommonUtils.startActivity(this, MainActivity.class);
         CommonUtils.finishActivity(this);
     }
 
     @Override
-    public void checkSMSCodeError() {
-        ToastUtil.show(this, "检查验证码失败");
+    public void loginError() {
+        ToastUtil.show(this, "登录失败");
 
     }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.bt_login:
-                if (!TextUtils.isEmpty(TextViewUtils.getText(et_phone)) && !TextUtils.isEmpty(TextViewUtils.getText(et_code))) {
-
-                    JMessageClient.login(TextViewUtils.getText(et_phone), TextViewUtils.getText(et_code), new BasicCallback() {
-                        @Override
-                        public void gotResult(int responseCode, String LoginDesc) {
-                            if (responseCode == 0) {
-                                Toast.makeText(getApplicationContext(), "登录成功", Toast.LENGTH_SHORT).show();
-                                Log.i("MainActivity", "JMessageClient.login" + ", responseCode = " + responseCode + " ; LoginDesc = " + LoginDesc);
-                                Intent intent = new Intent();
-                                intent.setClass(LoginActivity.this, MainActivity.class);
-                                startActivity(intent);
-                                finish();
-                            } else {
-                                Toast.makeText(getApplicationContext(), "登录失败", Toast.LENGTH_SHORT).show();
-                                Log.i("MainActivity", "JMessageClient.login" + ", responseCode = " + responseCode + " ; LoginDesc = " + LoginDesc);
-                            }
-                        }
-                    });
-                } else {
-                    CommonUtils.showInfoDialog(this, "手机号码或验证码为空");
-                }
-
-//                if (!TextUtils.isEmpty(TextViewUtils.getText(et_phone)) && !TextUtils.isEmpty(TextViewUtils.getText(et_code))) {
-//
-//                    mPresenter.checkSMSCode(TextViewUtils.getText(et_phone), TextViewUtils.getText(et_code), MyApplication.getRegistrationId());
-//                } else {
-//                    CommonUtils.showInfoDialog(this, "手机号码或验证码为空");
-//                }
-                break;
-            case R.id.bt_getCode:
-
-                if (!TextUtils.isEmpty(TextViewUtils.getText(et_phone))) {
-                    if (CommonUtils.isUserNumber(TextViewUtils.getText(et_phone))) {
-                        try {
-                            mPresenter.getSMSCode(TextViewUtils.getText(et_phone));
-
-                            timeCount.start();
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        CommonUtils.showInfoDialog(this, "请输入正确的手机号码");
-                        //ToastUtil.show(this, "请输入正确的手机号码");
-                    }
-                } else {
-                    CommonUtils.showInfoDialog(this, "请输入您的手机号码");
-                    // ToastUtil.show(this, "请输入您的手机号码");
-                }
-                break;
-            // 点击跳转 webView页面
-            case R.id.tv_tiaokuan:
-//                CommonUtils.jumptActivity(this, WebViewActivity2.class, "title", "服务协议", "webview", "http://m.1yongche.com/page/serviceProtocol/protocol.html");
-                WebViewActivity.loadUrl(this,"http://m.1yongche.com/page/serviceProtocol/protocol.html","服务协议");
-                overridePendingTransition(R.anim.screen_zoom_in, R.anim.screen_zoom_out);
-                break;
-        }
-    }
-
 }

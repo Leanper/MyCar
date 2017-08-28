@@ -1,6 +1,5 @@
 package com.ygst.cenggeche.app;
 
-import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.graphics.Point;
@@ -29,7 +28,6 @@ import com.ygst.cenggeche.utils.SharedPreferencesUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import cn.jpush.im.android.api.JMessageClient;
 
@@ -47,11 +45,7 @@ public class MyApplication extends Application {
 
     private static final String IS_LOGIN_ED = "isLoginEd";
     private static final String IS_NOTIFICATION = "isNotification";
-    private static final String IS_OWNER = "isOwner";
-    private static ArrayList<Activity> activityList = new ArrayList();
     private static Context mContext = null;
-    private static boolean isLoginEd = false;
-    public static String location = "北京";
 
     public static int getMainThreadId() {
         return mainThreadId;
@@ -76,7 +70,6 @@ public class MyApplication extends Application {
      * @param isLoginEd
      */
     public static void setIsLoginEd(boolean isLoginEd) {
-        MyApplication.isLoginEd = isLoginEd;
         SharedPreferencesUtils.saveBoolean(IS_LOGIN_ED, isLoginEd);
     }
 
@@ -95,23 +88,33 @@ public class MyApplication extends Application {
      * @param isLoginEd
      */
     public static void setIsNotification(boolean isLoginEd) {
-        MyApplication.isLoginEd = isLoginEd;
         SharedPreferencesUtils.saveBoolean(IS_NOTIFICATION, isLoginEd);
     }
 
-
     /**
-     * 保存用户类型
+     * 保存UserId
      */
-    public static void saveUserStatus(String token) {
-        SharedPreferencesUtils.saveString("UserStatus", token);
+    public static void saveUid(String username) {
+        SharedPreferencesUtils.saveString("UID", username);
     }
     /*
-    获取 用户类型
+    获取UserId
      */
+    public static String getUid() {
+        return SharedPreferencesUtils.getString("UID", null);
+    }
 
-    public static String getUserStatus() {
-        return SharedPreferencesUtils.getString("UserStatus", null);
+    /**
+     * 保存UserName
+     */
+    public static void saveUserName(String username) {
+        SharedPreferencesUtils.saveString("USERNAME", username);
+    }
+    /*
+    获取UserName
+     */
+    public static String getUserName() {
+        return SharedPreferencesUtils.getString("USERNAME", null);
     }
 
     /**
@@ -123,7 +126,6 @@ public class MyApplication extends Application {
     /*
     获取token
      */
-
     public static String getToken() {
         return SharedPreferencesUtils.getString("TOKEN", null);
     }
@@ -135,140 +137,39 @@ public class MyApplication extends Application {
         SharedPreferencesUtils.saveString("ICON", token);
     }
     /*
-    获取token
+    获取头像
      */
-
     public static String getIcon() {
         return SharedPreferencesUtils.getString("ICON", null);
     }
 
     /**
-     * 保存carID
-     */
-    public static void saveUpCarId(String token) {
-        SharedPreferencesUtils.saveString("CarId", token);
-    }
-    /*
-    获取carID
-     */
-
-    public static String getAndroidId() {
-        return SharedPreferencesUtils.getString("ANDROID_ID", null);
-    }
-
-
-    /**
-     * 保存carID
+     * 保存手机设备ID
      */
     public static void saveAndroidId() {
         SharedPreferencesUtils.saveString("ANDROID_ID", CommonUtils.getIMEI(MyApplication.getContext()));
     }
+
     /*
-    获取carID
+    获取手机设备ID
      */
-
-    public static String getUpCarId() {
-        return SharedPreferencesUtils.getString("CarId", null);
+    public static String getAndroidId() {
+        return SharedPreferencesUtils.getString("ANDROID_ID", null);
     }
 
     /**
-     * 保存UsrId
-     */
-    public static void saveUserId(String userId) {
-        SharedPreferencesUtils.saveString("USER_ID", userId);
-    }
-
-    /**
-     * 获取UsrId
-     */
-    public static String getUserId() {
-        return SharedPreferencesUtils.getString("USER_ID", "");
-    }
-
-    /**
-     * 保存Id
-     */
-    public static void saveId(String id) {
-        SharedPreferencesUtils.saveString("SID", id);
-    }
-
-    /**
-     * 获取Id
-     */
-    public static String getId() {
-        return SharedPreferencesUtils.getString("SID", "");
-    }
-
-    /**
-     * 保存UsrId
+     * 保存RegistrationId
      */
     public static void saveRegistrationId(String userId) {
         SharedPreferencesUtils.saveString("REGISTRATION_ID", userId);
     }
 
     /**
-     * 获取UsrId
+     * 获取RegistrationId
      */
     public static String getRegistrationId() {
         return SharedPreferencesUtils.getString("REGISTRATION_ID", "");
     }
-
-    /**
-     * 保存商家用户名
-     */
-    public static void saveStoreOwn(String storeUserName) {
-        SharedPreferencesUtils.saveString("STORE_USER_NAME", storeUserName);
-    }
-
-    /**
-     * 获取商家用户名
-     */
-    public static String getStoreOwn() {
-        return SharedPreferencesUtils.getString("STORE_USER_NAME", "");
-    }
-
-    /**
-     * 保存商家店名
-     */
-    public static void saveStore(String storeName) {
-        SharedPreferencesUtils.saveString("STORE_NAME", storeName);
-    }
-
-    /**
-     * 获取商家店名
-     */
-    public static String getStore() {
-        return SharedPreferencesUtils.getString("STORE_NAME", "");
-    }
-
-    /**
-     * 保存商家地址
-     */
-    public static void saveStoreAddr(String storeAddr) {
-        SharedPreferencesUtils.saveString("STORE_ADDR", storeAddr);
-    }
-
-    /**
-     * 获取商家地址
-     */
-    public static String getStoreAddr() {
-        return SharedPreferencesUtils.getString("STORE_ADDR", "");
-    }
-
-    /**
-     * 保存商家电话
-     */
-    public static void savePhone(String storeAddr) {
-        SharedPreferencesUtils.saveString("PHONE", storeAddr);
-    }
-
-    /**
-     * 获取商家电话
-     */
-    public static String getPhone() {
-        return SharedPreferencesUtils.getString("PHONE", "");
-    }
-
 
     // 保存验证状态
     public static void savaStatus(String time) {
@@ -285,17 +186,10 @@ public class MyApplication extends Application {
         SharedPreferencesUtils.saveString("USER_ID", "");
         SharedPreferencesUtils.saveBoolean(IS_LOGIN_ED, false);
         setIsLoginEd(false);
-        saveStoreOwn("");
-        saveStore("");
-        saveStoreAddr("");
-        savePhone("");
 
         saveToken("");
-        saveUpCarId("");
         saveIcon("");
         savaStatus("");
-        saveUserStatus("");
-
     }
 
     private static Handler handler;
@@ -316,7 +210,6 @@ public class MyApplication extends Application {
         mContext = getApplicationContext();
         handler = new Handler();//创建Handle
         mainThreadId = Process.myTid();//得到主线程id
-        isLoginEd = SharedPreferencesUtils.getBoolean(IS_LOGIN_ED, false);
         saveAndroidId();
         // autolayout 的适配初始化 包括状态栏和底部操作栏
 //        AutoLayoutConifg.getInstance().useDeviceSize().init(this);

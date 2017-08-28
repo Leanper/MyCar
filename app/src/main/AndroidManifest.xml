@@ -65,6 +65,8 @@
         <activity android:name=".ui.activity.addfriend.AddFriendActivity" />
         <!--联系人列表-->
         <activity android:name=".ui.activity.friendlist.FriendListActivity" />
+        <!--好友详细信息-->
+        <activity android:name=".ui.activity.friendinfo.FriendInfoActivity" />
 
 
         <!--下面是极光IM功能展示界面-->

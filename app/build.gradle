@@ -160,6 +160,7 @@ dependencies {
     compile 'com.github.chrisbanes:PhotoView:1.3.0'
     //动画库
     compile 'com.nineoldandroids:library:2.4.0'
+
     compile 'com.squareup.okhttp3:logging-interceptor:3.4.1'
     compile 'com.squareup.retrofit2:converter-scalars:2.1.0'
     compile 'com.umeng.analytics:analytics:latest.integration'
@@ -173,7 +174,8 @@ dependencies {
     // 此处以JCore 1.1.6 版本为例。
     compile 'cn.jiguang.sdk:jcore:1.1.6'
     //一个图片缓存库
-    compile files('libs/picasso-2.4.0.jar')
+//    compile files('libs/picasso-2.4.0.jar')
+    compile 'com.squareup.picasso:picasso:2.5.2'
 
     //一个表情包库
     compile 'com.lqr.emoji:library:1.0.2'

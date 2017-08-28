@@ -4,8 +4,8 @@ package com.ygst.cenggeche.ui.activity.friendlist;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.widget.TextView;
 
 import com.ygst.cenggeche.R;
 import com.ygst.cenggeche.bean.FriendBean;
@@ -19,6 +19,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 /**
@@ -35,8 +36,17 @@ public class FriendListActivity extends MVPBaseActivity<FriendListContract.View,
     List<FriendBean> nameList = new ArrayList<>();
     private LinearLayoutManager layoutManager;
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
+    @BindView(R.id.tv_title)
+    TextView mTvTitle;
+
+    /**
+     * 返回
+     */
+    @OnClick(R.id.iv_back)
+    public void goBack(){
+        finish();
+    }
+
     @Override
     protected int getLayoutId() {
         return R.layout.activity_friend_list;
@@ -45,15 +55,13 @@ public class FriendListActivity extends MVPBaseActivity<FriendListContract.View,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
-        setToolBar(mToolbar, "好友列表", true);
 //        JMessageClient.registerEventReceiver(this);
         initViews();
         initEvents();
     }
 
-
     public void initViews() {
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mTvTitle.setText("登录");
         mAdapter = new ContactAdapter(this);
         rl_recycle_view = (RecyclerView) findViewById(R.id.rl_recycle_view);
         //侧边导航栏
@@ -64,7 +72,6 @@ public class FriendListActivity extends MVPBaseActivity<FriendListContract.View,
         rl_recycle_view.setItemAnimator(new SlideInOutLeftItemAnimator(rl_recycle_view));
         initDatas();
         rl_recycle_view.setAdapter(mAdapter);
-
     }
 
     public void initEvents() {

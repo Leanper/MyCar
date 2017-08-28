@@ -22,7 +22,7 @@ import com.ygst.cenggeche.ui.view.swipemenulistview.SwipeMenu;
 import com.ygst.cenggeche.ui.view.swipemenulistview.SwipeMenuCreator;
 import com.ygst.cenggeche.ui.view.swipemenulistview.SwipeMenuItem;
 import com.ygst.cenggeche.ui.view.swipemenulistview.SwipeMenuListView;
-import com.ygst.cenggeche.utils.JChatUtils;
+import com.ygst.cenggeche.utils.JMessageUtils;
 import com.ygst.cenggeche.utils.ToastUtil;
 
 import java.util.List;
@@ -125,7 +125,7 @@ public class MessageFragment extends MVPBaseFragment<MessageContract.View, Messa
             @Override
             public void onClick(View v) {
                 final Intent intent = new Intent();
-                intent.putExtra(JChatUtils.TARGET_ID_KEY, mEditTextTargetId.getText().toString());
+                intent.putExtra(JMessageUtils.TARGET_ID_KEY, mEditTextTargetId.getText().toString());
                 intent.setClass(mContext, ChatActivity.class);
                 startActivity(intent);
             }
@@ -174,13 +174,13 @@ public class MessageFragment extends MVPBaseFragment<MessageContract.View, Messa
 
                 if (conversation.getType().equals(ConversationType.single)){
                     String targetId = ((UserInfo) conversation.getTargetInfo()).getUserName();
-                    intent.putExtra(JChatUtils.TARGET_ID_KEY, targetId);
-                    intent.putExtra(JChatUtils.TARGET_APP_KEY, conversation.getTargetAppKey());
+                    intent.putExtra(JMessageUtils.TARGET_ID_KEY, targetId);
+                    intent.putExtra(JMessageUtils.TARGET_APP_KEY, conversation.getTargetAppKey());
                     intent.setClass(mContext, ChatActivity.class);
                     startActivity(intent);
                 } else{
                     long groupId = ((GroupInfo) conversation.getTargetInfo()).getGroupID();
-                    intent.putExtra(JChatUtils.GROUP_ID_KEY, groupId);
+                    intent.putExtra(JMessageUtils.GROUP_ID_KEY, groupId);
                     intent.setClass(mContext, ChatActivity.class);
                     startActivity(intent);
                 }

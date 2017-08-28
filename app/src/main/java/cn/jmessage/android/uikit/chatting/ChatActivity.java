@@ -31,7 +31,7 @@ import android.widget.Toast;
 
 import com.jarek.imageselect.activity.FolderListActivity;
 import com.jarek.imageselect.bean.ImageFolderBean;
-import com.ygst.cenggeche.utils.JChatUtils;
+import com.ygst.cenggeche.utils.JMessageUtils;
 import com.ygst.cenggeche.utils.ToastUtil;
 
 import java.io.File;
@@ -133,7 +133,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
         initReceiver();
 
         Intent intent = getIntent();
-        mTargetId = intent.getStringExtra(JChatUtils.TARGET_ID_KEY);
+        mTargetId = intent.getStringExtra(JMessageUtils.TARGET_ID_KEY);
         mTargetAppKey = intent.getStringExtra(TARGET_APP_KEY);
         if (!TextUtils.isEmpty(mTargetId)) {
             mIsSingle = true;
@@ -157,7 +157,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
             mChatAdapter = new MsgListAdapter(mContext, mTargetId, mTargetAppKey, longClickListener);
         } else {
             mIsSingle = false;
-            mGroupId = intent.getLongExtra(JChatUtils.GROUP_ID_KEY, 0);
+            mGroupId = intent.getLongExtra(JMessageUtils.GROUP_ID_KEY, 0);
             Log.d(TAG, "GroupId : " + mGroupId);
 
             //UIKit 直接用getGroupInfo更新标题,而不用考虑从创建群聊跳转过来
@@ -439,9 +439,9 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
         if (!RecordVoiceButton.mIsPressed) {
             mChatView.dismissRecordDialog();
         }
-        String targetId = getIntent().getStringExtra(JChatUtils.TARGET_ID_KEY);
+        String targetId = getIntent().getStringExtra(JMessageUtils.TARGET_ID_KEY);
         if (!mIsSingle) {
-            long groupId = getIntent().getLongExtra(JChatUtils.GROUP_ID_KEY, 0);
+            long groupId = getIntent().getLongExtra(JMessageUtils.GROUP_ID_KEY, 0);
             if (groupId != 0) {
                 JMessageClient.enterGroupConversation(groupId);
             }

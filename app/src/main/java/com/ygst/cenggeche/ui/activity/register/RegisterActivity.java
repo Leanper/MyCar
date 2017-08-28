@@ -41,6 +41,13 @@ public class RegisterActivity extends MVPBaseActivity<RegisterContract.View, Reg
     @BindView(R.id.btn_get_sms_code)
     Button mBtnGetSmsCode;
 
+    /**
+     * 返回
+     */
+    @OnClick(R.id.iv_back)
+    public void goBack(){
+        finish();
+    }
     //获取验证
     @OnClick(R.id.btn_get_sms_code)
     public void getSmsCode() {

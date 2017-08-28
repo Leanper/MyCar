@@ -519,10 +519,10 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public void onComplete(int i, String s, File file) {
                         if (i == 0) {
-                            Toast.makeText(getApplicationContext(), "下载缩略图成功", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "下载成功", Toast.LENGTH_SHORT).show();
                             intentImage.putExtra(DOWNLOAD_THUMBNAIL_IMAGE, file.getPath());
                         } else {
-                            Toast.makeText(getApplicationContext(), "下载原图失败", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "下载缩略图失败", Toast.LENGTH_SHORT).show();
                             Log.i(TAG, "downloadThumbnailImage" + ", responseCode = " + i + " ; desc = " + s);
                         }
                     }

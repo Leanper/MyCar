@@ -6,13 +6,26 @@ package com.ygst.cenggeche.bean;
 
 public class LoginBean {
 
-    private String code;
-    private String msg;
+    public static String PWD_TO_LOGIN ="1";
+    public static String CODE_TO_LOGIN ="2";
+
     /**
-     * user : {"uid":131,"platform":"","loginTime":"","phone":"18500632163","storeOwn":"耿","store":"北京亦庄金桥4s店","extend1":"","extend3":"","extend2":"","pass":"","id":3,"storeAddr":"中国北京市北京市大兴区康定街118号","storeStatus":1,"time":"1499158007","storeLev":1,"money":1122,"lan":116.5465769,"lat":39.7775266,"deviceId":"","passStatus":0,"payPass":"123456","storeCode":10002}
+     * data : {"birthday":"1994-08-24","home":"","loginTime":"2017-08-28 18:22:27","jingWeiDu":"199,11","registrationId":"18500632163","location":"","tag":"","rubNum":0,"passiveRubNum":0,"education":0,"password":"18500632163","userSign":"","redisTime":"2017-08-28 17:42:44","id":888,"username":"18500632163","distance":"","age":23,"gender":1,"isTestUser":0,"userlev":0,"deviceId":"1111111111111111111111111","lat":11,"lit":199,"platform":"android","userPic":"","nickname":"qing","expand3":"","expand2":"","expand1":"","totalNum":0,"useremail":"","userStatus":0,"realname":""}
+     * code : 0000
+     * msg : 执行成功
      */
 
-    private UserBean user;
+    private DataBean data;
+    private String code;
+    private String msg;
+
+    public DataBean getData() {
+        return data;
+    }
+
+    public void setData(DataBean data) {
+        this.data = data;
+    }
 
     public String getCode() {
         return code;
@@ -30,78 +43,91 @@ public class LoginBean {
         this.msg = msg;
     }
 
-    public UserBean getUser() {
-        return user;
-    }
-
-    public void setUser(UserBean user) {
-        this.user = user;
-    }
-
-
-    public static class UserBean {
+    public static class DataBean {
         /**
-         * uid : 131
-         * platform :
-         * loginTime :
-         * phone : 18500632163
-         * storeOwn : 耿
-         * store : 北京亦庄金桥4s店
-         * extend1 :
-         * extend3 :
-         * extend2 :
-         * pass :
-         * id : 3
-         * storeAddr : 中国北京市北京市大兴区康定街118号
-         * storeStatus : 1
-         * time : 1499158007
-         * storeLev : 1
-         * money : 1122
-         * lan : 116.5465769
-         * lat : 39.7775266
-         * deviceId :
-         * passStatus : 0
-         * payPass : 123456
-         * storeCode : 10002
+         * birthday : 1994-08-24
+         * home :
+         * loginTime : 2017-08-28 18:22:27
+         * jingWeiDu : 199,11
+         * registrationId : 18500632163
+         * location :
+         * tag :
+         * rubNum : 0
+         * passiveRubNum : 0
+         * education : 0
+         * password : 18500632163
+         * userSign :
+         * redisTime : 2017-08-28 17:42:44
+         * id : 888
+         * username : 18500632163
+         * distance :
+         * age : 23
+         * gender : 1
+         * isTestUser : 0
+         * userlev : 0
+         * deviceId : 1111111111111111111111111
+         * lat : 11
+         * lit : 199
+         * platform : android
+         * userPic :
+         * nickname : qing
+         * expand3 :
+         * expand2 :
+         * expand1 :
+         * totalNum : 0
+         * useremail :
+         * userStatus : 0
+         * realname :
          */
 
-        private int uid;
-        private String platform;
+        private String birthday;
+        private String home;
         private String loginTime;
-        private String phone;
-        private String storeOwn;
-        private String store;
-        private String extend1;
-        private String extend3;
-        private String extend2;
-        private String pass;
+        private String jingWeiDu;
+        private String registrationId;
+        private String location;
+        private String tag;
+        private int rubNum;
+        private int passiveRubNum;
+        private int education;
+        private String password;
+        private String userSign;
+        private String redisTime;
         private int id;
-        private String storeAddr;
-        private int storeStatus;
-        private String time;
-        private int storeLev;
-        private int money;
-        private double lan;
-        private double lat;
+        private String username;
+        private String distance;
+        private int age;
+        private int gender;
+        private int isTestUser;
+        private int userlev;
         private String deviceId;
-        private int passStatus;
-        private String payPass;
-        private int storeCode;
+        private int lat;
+        private int lit;
+        private String platform;
+        private String userPic;
+        private String nickname;
+        private String expand3;
+        private String expand2;
+        private String expand1;
+        private int totalNum;
+        private String useremail;
+        private int userStatus;
+        private String realname;
 
-        public int getUid() {
-            return uid;
+        public String getBirthday() {
+            return birthday;
         }
 
-        public void setUid(int uid) {
-            this.uid = uid;
+        public void setBirthday(String birthday) {
+            this.birthday = birthday;
         }
 
-        public String getPlatform() {
-            return platform;
+        public String getHome() {
+            return home;
         }
 
-        public void setPlatform(String platform) {
-            this.platform = platform;
+        public void setHome(String home) {
+            this.home = home;
         }
 
         public String getLoginTime() {
@@ -112,60 +138,84 @@ public class LoginBean {
             this.loginTime = loginTime;
         }
 
-        public String getPhone() {
-            return phone;
+        public String getJingWeiDu() {
+            return jingWeiDu;
         }
 
-        public void setPhone(String phone) {
-            this.phone = phone;
+        public void setJingWeiDu(String jingWeiDu) {
+            this.jingWeiDu = jingWeiDu;
         }
 
-        public String getStoreOwn() {
-            return storeOwn;
+        public String getRegistrationId() {
+            return registrationId;
         }
 
-        public void setStoreOwn(String storeOwn) {
-            this.storeOwn = storeOwn;
+        public void setRegistrationId(String registrationId) {
+            this.registrationId = registrationId;
         }
 
-        public String getStore() {
-            return store;
+        public String getLocation() {
+            return location;
         }
 
-        public void setStore(String store) {
-            this.store = store;
+        public void setLocation(String location) {
+            this.location = location;
         }
 
-        public String getExtend1() {
-            return extend1;
+        public String getTag() {
+            return tag;
         }
 
-        public void setExtend1(String extend1) {
-            this.extend1 = extend1;
+        public void setTag(String tag) {
+            this.tag = tag;
         }
 
-        public String getExtend3() {
-            return extend3;
+        public int getRubNum() {
+            return rubNum;
         }
 
-        public void setExtend3(String extend3) {
-            this.extend3 = extend3;
+        public void setRubNum(int rubNum) {
+            this.rubNum = rubNum;
         }
 
-        public String getExtend2() {
-            return extend2;
+        public int getPassiveRubNum() {
+            return passiveRubNum;
         }
 
-        public void setExtend2(String extend2) {
-            this.extend2 = extend2;
+        public void setPassiveRubNum(int passiveRubNum) {
+            this.passiveRubNum = passiveRubNum;
         }
 
-        public String getPass() {
-            return pass;
+        public int getEducation() {
+            return education;
         }
 
-        public void setPass(String pass) {
-            this.pass = pass;
+        public void setEducation(int education) {
+            this.education = education;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
+        }
+
+        public String getUserSign() {
+            return userSign;
+        }
+
+        public void setUserSign(String userSign) {
+            this.userSign = userSign;
+        }
+
+        public String getRedisTime() {
+            return redisTime;
+        }
+
+        public void setRedisTime(String redisTime) {
+            this.redisTime = redisTime;
         }
 
         public int getId() {
@@ -176,60 +226,52 @@ public class LoginBean {
             this.id = id;
         }
 
-        public String getStoreAddr() {
-            return storeAddr;
+        public String getUsername() {
+            return username;
         }
 
-        public void setStoreAddr(String storeAddr) {
-            this.storeAddr = storeAddr;
+        public void setUsername(String username) {
+            this.username = username;
         }
 
-        public int getStoreStatus() {
-            return storeStatus;
+        public String getDistance() {
+            return distance;
         }
 
-        public void setStoreStatus(int storeStatus) {
-            this.storeStatus = storeStatus;
+        public void setDistance(String distance) {
+            this.distance = distance;
         }
 
-        public String getTime() {
-            return time;
+        public int getAge() {
+            return age;
         }
 
-        public void setTime(String time) {
-            this.time = time;
+        public void setAge(int age) {
+            this.age = age;
         }
 
-        public int getStoreLev() {
-            return storeLev;
+        public int getGender() {
+            return gender;
         }
 
-        public void setStoreLev(int storeLev) {
-            this.storeLev = storeLev;
+        public void setGender(int gender) {
+            this.gender = gender;
         }
 
-        public int getMoney() {
-            return money;
+        public int getIsTestUser() {
+            return isTestUser;
         }
 
-        public void setMoney(int money) {
-            this.money = money;
+        public void setIsTestUser(int isTestUser) {
+            this.isTestUser = isTestUser;
         }
 
-        public double getLan() {
-            return lan;
+        public int getUserlev() {
+            return userlev;
         }
 
-        public void setLan(double lan) {
-            this.lan = lan;
-        }
-
-        public double getLat() {
-            return lat;
-        }
-
-        public void setLat(double lat) {
-            this.lat = lat;
+        public void setUserlev(int userlev) {
+            this.userlev = userlev;
         }
 
         public String getDeviceId() {
@@ -240,28 +282,100 @@ public class LoginBean {
             this.deviceId = deviceId;
         }
 
-        public int getPassStatus() {
-            return passStatus;
+        public int getLat() {
+            return lat;
         }
 
-        public void setPassStatus(int passStatus) {
-            this.passStatus = passStatus;
+        public void setLat(int lat) {
+            this.lat = lat;
         }
 
-        public String getPayPass() {
-            return payPass;
+        public int getLit() {
+            return lit;
         }
 
-        public void setPayPass(String payPass) {
-            this.payPass = payPass;
+        public void setLit(int lit) {
+            this.lit = lit;
         }
 
-        public int getStoreCode() {
-            return storeCode;
+        public String getPlatform() {
+            return platform;
         }
 
-        public void setStoreCode(int storeCode) {
-            this.storeCode = storeCode;
+        public void setPlatform(String platform) {
+            this.platform = platform;
+        }
+
+        public String getUserPic() {
+            return userPic;
+        }
+
+        public void setUserPic(String userPic) {
+            this.userPic = userPic;
+        }
+
+        public String getNickname() {
+            return nickname;
+        }
+
+        public void setNickname(String nickname) {
+            this.nickname = nickname;
+        }
+
+        public String getExpand3() {
+            return expand3;
+        }
+
+        public void setExpand3(String expand3) {
+            this.expand3 = expand3;
+        }
+
+        public String getExpand2() {
+            return expand2;
+        }
+
+        public void setExpand2(String expand2) {
+            this.expand2 = expand2;
+        }
+
+        public String getExpand1() {
+            return expand1;
+        }
+
+        public void setExpand1(String expand1) {
+            this.expand1 = expand1;
+        }
+
+        public int getTotalNum() {
+            return totalNum;
+        }
+
+        public void setTotalNum(int totalNum) {
+            this.totalNum = totalNum;
+        }
+
+        public String getUseremail() {
+            return useremail;
+        }
+
+        public void setUseremail(String useremail) {
+            this.useremail = useremail;
+        }
+
+        public int getUserStatus() {
+            return userStatus;
+        }
+
+        public void setUserStatus(int userStatus) {
+            this.userStatus = userStatus;
+        }
+
+        public String getRealname() {
+            return realname;
+        }
+
+        public void setRealname(String realname) {
+            this.realname = realname;
         }
     }
 }

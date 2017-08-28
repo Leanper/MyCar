@@ -4,8 +4,9 @@ package com.ygst.cenggeche.utils;
  * Created by Administrator on 2017/8/18.
  */
 
-public class JChatUtils {
+public class JMessageUtils {
 
+    public static final String JMESSAGE_LOGIN_PASSWROD="abcd1234";
     //本应用AppKey
     public static final String JCHAT_APP_KEY = "315c66147c51cd5089d70c57";
     //目标用户的AppKey（为空时，默认为本应用appkey）

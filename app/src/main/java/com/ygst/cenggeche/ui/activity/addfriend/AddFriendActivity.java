@@ -2,7 +2,6 @@ package com.ygst.cenggeche.ui.activity.addfriend;
 
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -11,7 +10,7 @@ import android.widget.EditText;
 
 import com.ygst.cenggeche.R;
 import com.ygst.cenggeche.mvp.MVPBaseActivity;
-import com.ygst.cenggeche.utils.JChatUtils;
+import com.ygst.cenggeche.utils.JMessageUtils;
 import com.ygst.cenggeche.utils.ToastUtil;
 
 import butterknife.BindView;
@@ -28,9 +27,6 @@ import cn.jpush.im.api.BasicCallback;
 
 public class AddFriendActivity extends MVPBaseActivity<AddFriendContract.View, AddFriendPresenter> implements AddFriendContract.View {
 
-    @BindView(R.id.toolbar)
-    Toolbar mToolbar;
-
     @BindView(R.id.et_target_userid)
     EditText mEditTextTargetUserId;
 
@@ -44,7 +40,7 @@ public class AddFriendActivity extends MVPBaseActivity<AddFriendContract.View, A
     public void addFriendSubmit(){
         String userID= mEditTextTargetUserId.getText().toString();
         String reason = mEditTextReason.getText().toString();
-        ContactManager.sendInvitationRequest(userID, JChatUtils.TARGET_APP_KEY, reason, new BasicCallback() {
+        ContactManager.sendInvitationRequest(userID, JMessageUtils.TARGET_APP_KEY, reason, new BasicCallback() {
             @Override
             public void gotResult(int responseCode, String responseMessage) {
                 if (0 == responseCode) {
@@ -93,7 +89,6 @@ public class AddFriendActivity extends MVPBaseActivity<AddFriendContract.View, A
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
-        setToolBar(mToolbar, "添加好友", true);
         initData();
     }
 
