@@ -10,73 +10,27 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:layout_marginTop="20dp"
         android:orientation="vertical">
 
-        <RelativeLayout
+
+        <EditText
+            android:id="@+id/et_reason"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp">
+            android:layout_height="43dp"
+            android:background="@drawable/edit_bg"
+            android:hint="打个招呼吧"
+            android:textSize="14sp" />
 
-            <EditText
-                android:id="@+id/et_target_userid"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/bt_t"
-                android:layout_alignTop="@+id/bt_t"
-                android:background="@drawable/edit_bg"
-                android:hint="请输入要添加的好友号"
-                android:inputType="phone"
-                android:maxLength="11"
-                android:paddingLeft="10dp"
-                android:textSize="16sp" />
-
-            <Button
-                android:id="@+id/bt_t"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/button_selector_code"
-                android:text="T"
-                android:textColor="@color/white" />
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <EditText
-                android:id="@+id/et_reason"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/bt_t2"
-                android:layout_alignTop="@+id/bt_t2"
-                android:layout_toLeftOf="@+id/bt_t2"
-                android:background="@drawable/edit_bg_code"
-                android:digits="1234567890"
-                android:hint="打个招呼吧"
-                android:inputType="numberDecimal"
-                android:paddingLeft="10dp"
-                android:textSize="16sp" />
-
-            <Button
-                android:id="@+id/bt_t2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/button_selector_code"
-                android:text="T"
-                android:textColor="@color/white" />
-        </RelativeLayout>
 
         <Button
             android:id="@+id/bt_submit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="30dp"
             android:background="@drawable/button_selector"
             android:text="确定"
             android:textColor="@color/white"

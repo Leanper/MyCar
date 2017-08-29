@@ -176,7 +176,13 @@ dependencies {
     //一个图片缓存库
 //    compile files('libs/picasso-2.4.0.jar')
     compile 'com.squareup.picasso:picasso:2.5.2'
-
     //一个表情包库
     compile 'com.lqr.emoji:library:1.0.2'
+
+    //3D地图so及jar
+    compile 'com.amap.api:3dmap:latest.integration'
+    //定位功能
+    compile 'com.amap.api:location:latest.integration'
+    //搜索功能
+    compile 'com.amap.api:search:latest.integration'
 }

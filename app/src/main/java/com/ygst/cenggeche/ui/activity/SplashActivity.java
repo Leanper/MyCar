@@ -15,8 +15,6 @@ import com.ygst.cenggeche.utils.CommonUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
-import cn.jpush.im.android.api.JMessageClient;
-import cn.jpush.im.android.api.model.UserInfo;
 
 
 public class SplashActivity extends BaseActivity {
@@ -77,14 +75,15 @@ public class SplashActivity extends BaseActivity {
 
     private void initData() {
         //检测账号是否登陆
-        UserInfo myInfo = JMessageClient.getMyInfo();
-        if (myInfo == null) {
-            //登录注册
-            CommonUtils.startActivity(this,LoginActivity.class);
-        }else {
-            //主界面
-            CommonUtils.startActivity(this,MainActivity.class);
-        }
+//        UserInfo myInfo = JMessageClient.getMyInfo();
+//        if (myInfo == null) {
+//            //登录注册
+//            CommonUtils.startActivity(this,LoginActivity.class);
+//        }else {
+//            //主界面
+//        CommonUtils.startActivity(this,MainActivity.class);
+//        }
+        CommonUtils.startActivity(this,MainActivity.class);
         finish();
     }
 

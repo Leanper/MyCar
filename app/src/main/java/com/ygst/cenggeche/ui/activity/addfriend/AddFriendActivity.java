@@ -1,12 +1,11 @@
 package com.ygst.cenggeche.ui.activity.addfriend;
 
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.ygst.cenggeche.R;
 import com.ygst.cenggeche.mvp.MVPBaseActivity;
@@ -26,10 +25,10 @@ import cn.jpush.im.api.BasicCallback;
  */
 
 public class AddFriendActivity extends MVPBaseActivity<AddFriendContract.View, AddFriendPresenter> implements AddFriendContract.View {
+    private String username;
 
-    @BindView(R.id.et_target_userid)
-    EditText mEditTextTargetUserId;
-
+    @BindView(R.id.tv_title)
+    TextView mTvTitle;
     @BindView(R.id.et_reason)
     EditText mEditTextReason;
 
@@ -38,47 +37,22 @@ public class AddFriendActivity extends MVPBaseActivity<AddFriendContract.View, A
 
     @OnClick(R.id.bt_submit)
     public void addFriendSubmit(){
-        String userID= mEditTextTargetUserId.getText().toString();
+        Intent intent = this.getIntent();
+        String username=intent.getStringExtra(JMessageUtils.TARGET_USERNAME);
         String reason = mEditTextReason.getText().toString();
-        ContactManager.sendInvitationRequest(userID, JMessageUtils.TARGET_APP_KEY, reason, new BasicCallback() {
+        ContactManager.sendInvitationRequest(username, JMessageUtils.TARGET_APP_KEY, reason, new BasicCallback() {
             @Override
             public void gotResult(int responseCode, String responseMessage) {
                 if (0 == responseCode) {
                     //好友请求请求发送成功
-                    ToastUtil.show(AddFriendActivity.this,"添加好友发送成功");
+                    ToastUtil.show(AddFriendActivity.this,"申请好友发送成功，等待对方回应");
                 } else {
                     //好友请求发送失败
-                    ToastUtil.show(AddFriendActivity.this,"添加好友失败");
+                    ToastUtil.show(AddFriendActivity.this,"申请好友发送失败");
                 }
             }
         });
     }
-
-    TextWatcher mTextWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-        }
-
-        @Override
-        public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (TextUtils.isEmpty(mEditTextTargetUserId.getText().toString())) {
-                //设置按钮不可点击
-                mBtnSubmit.setClickable(false);
-                //设置按钮为按下状态
-                mBtnSubmit.setPressed(false);
-            } else {
-                //设置按钮可点击
-                mBtnSubmit.setClickable(true);
-                //设置按钮为正常状态
-                mBtnSubmit.setPressed(true);
-            }
-        }
-
-        @Override
-        public void afterTextChanged(Editable s) {
-        }
-    };
 
     @Override
     protected int getLayoutId() {
@@ -89,11 +63,8 @@ public class AddFriendActivity extends MVPBaseActivity<AddFriendContract.View, A
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ButterKnife.bind(this);
-        initData();
+        mTvTitle.setText("加为好友");
+
     }
 
-    private void initData() {
-        //设置提交按钮是否可以点击
-        mEditTextTargetUserId.addTextChangedListener(mTextWatcher);
-    }
 }

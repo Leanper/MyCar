@@ -70,24 +70,24 @@ public class HttpManager {
         if (MyApplication.getUid() != null) {
             uid = MyApplication.getUid();
         }
-        String os="android";
-        String sign =getSign(map);
-        Observable<String> observable = RetrofitUtil.getInstance().get(ProjectAPI.class).postMethod(deviceId,uid,sign,url, map);
+        String sign = getSign(map);
+        Observable<String> observable = RetrofitUtil.getInstance().get(ProjectAPI.class).postMethod(deviceId, uid, sign, url, map);
         //在子线程中执行请求，在主线程观察，将信息设置给观察者
         observable.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
     }
 
-    private String getSign(Map map){
+    private String getSign(Map map) {
         String stringA = "";
         //遍历list得到map里面排序后的元素
         Iterator<Map.Entry<String, String>> it = map.entrySet().iterator();
         while (it.hasNext()) {
             Map.Entry<String, String> entry = it.next();
-            stringA = stringA+entry.getKey()+"="+entry.getValue()+"&";
+            stringA = stringA + entry.getKey() + "=" + entry.getValue() + "&";
         }
-        stringA = stringA.substring(0,stringA.length()-1);
-        return RSAUtil.encryptByPublic(MyApplication.getContext(),stringA);
+        stringA = stringA.substring(0, stringA.length() - 1);
+        return RSAUtil.encryptByPublic(MyApplication.getContext(), stringA);
     }
+
     /**
      * Post方式请求
      * 封装时，传递observer

@@ -5,6 +5,8 @@ import com.ygst.cenggeche.bean.LoginBean;
 import com.ygst.cenggeche.mvp.BasePresenter;
 import com.ygst.cenggeche.mvp.BaseView;
 
+import java.util.Map;
+
 /**
  * MVPPlugin
  * 邮箱 784787081@qq.com
@@ -35,7 +37,7 @@ public class LoginContract {
         //获取验证码
         void getSMSCode(String phone) throws Exception;
         //登录
-        void login(LoginBean loginBean,String checkType);
+        void login(Map<String, String> map);
 
     }
 }

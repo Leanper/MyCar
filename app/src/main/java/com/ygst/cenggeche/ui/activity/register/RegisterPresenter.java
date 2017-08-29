@@ -36,8 +36,7 @@ public class RegisterPresenter extends BasePresenterImpl<RegisterContract.View> 
 
             @Override
             public void onError(Throwable e) {
-                if (mView != null)
-                    mView.checkIsRegistError();
+
             }
 
             @Override
@@ -49,9 +48,9 @@ public class RegisterPresenter extends BasePresenterImpl<RegisterContract.View> 
                     if (mView != null) {
                         mView.checkIsRegistSuccess();
                     }
-                    ToastUtil.show(mView.getContext(), codeBean.getMsg());
+//                    ToastUtil.show(mView.getContext(), codeBean.getMsg());
                 } else {
-                    ToastUtil.show(mView.getContext(), codeBean.getMsg());
+//                    ToastUtil.show(mView.getContext(), codeBean.getMsg());
                 }
             }
         }, map);

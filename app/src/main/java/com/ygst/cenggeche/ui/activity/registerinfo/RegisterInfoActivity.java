@@ -12,16 +12,24 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.blankj.utilcode.utils.LogUtils;
 import com.ygst.cenggeche.R;
-import com.ygst.cenggeche.bean.LoginBean;
+import com.ygst.cenggeche.app.MyApplication;
 import com.ygst.cenggeche.mvp.MVPBaseActivity;
+import com.ygst.cenggeche.utils.JMessageUtils;
+import com.ygst.cenggeche.utils.MD5Util;
+import com.ygst.cenggeche.utils.TextViewUtils;
 import com.ygst.cenggeche.utils.ToastUtil;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import cn.jpush.im.android.api.JMessageClient;
+import cn.jpush.im.api.BasicCallback;
 
 
 /**
@@ -31,6 +39,7 @@ import butterknife.OnClick;
 
 public class RegisterInfoActivity extends MVPBaseActivity<RegisterInfoContract.View, RegisterInfoPresenter> implements RegisterInfoContract.View {
 
+    private String TAG = "RegisterInfoActivity";
     int mYear, mMonth, mDay;
     final int DATE_DIALOG = 1;
 
@@ -61,7 +70,7 @@ public class RegisterInfoActivity extends MVPBaseActivity<RegisterInfoContract.V
      * 返回
      */
     @OnClick(R.id.iv_back)
-    public void goBack(){
+    public void goBack() {
         finish();
     }
 
@@ -82,6 +91,7 @@ public class RegisterInfoActivity extends MVPBaseActivity<RegisterInfoContract.V
         mIvBoy.setImageResource(R.mipmap.icon_boy_radio);
         mIvGirl.setImageResource(R.mipmap.icon_girl_radio_un);
     }
+
     /**
      * 选择性别--女
      */
@@ -98,6 +108,9 @@ public class RegisterInfoActivity extends MVPBaseActivity<RegisterInfoContract.V
     @OnClick(R.id.btn_submit)
     public void registrationConfirm() {
         nickname = mEtNickname.getText().toString();
+        pwd = TextViewUtils.getText(mEtPWD);
+        confirmPWD = TextViewUtils.getText(mEtConfirmPWD);
+        birthday = TextViewUtils.getText(mTvBirthdate);
         if (TextUtils.isEmpty(nickname)) {
             ToastUtil.show(this, "请输入正确昵称");
         } else if (TextUtils.isEmpty(pwd)) {
@@ -105,13 +118,27 @@ public class RegisterInfoActivity extends MVPBaseActivity<RegisterInfoContract.V
         } else if (!pwd.equals(confirmPWD)) {
             ToastUtil.show(this, "两次密码输入不一致");
         } else {
-            LoginBean.DataBean userBean = new LoginBean.DataBean();
-            userBean.setUsername(userName);
-            userBean.setNickname(mEtNickname.getText().toString());
-            userBean.setBirthday(mTvBirthdate.getText().toString());
-            userBean.setGender(gender);
-            userBean.setPassword(mEtPWD.getText().toString());
-            mPresenter.registrationConfirm(userBean);
+            JMessageClient.register(userName, JMessageUtils.JMESSAGE_LOGIN_PASSWROD, new BasicCallback() {
+                @Override
+                public void gotResult(int responseCode, String s) {
+                    LogUtils.i(TAG, "s:" + s);
+                    if (responseCode == 0) {
+                        LogUtils.i(TAG, "极光注册成功了");
+                        String password = MD5Util.string2MD5(pwd);
+                        Map<String, String> map = new HashMap<>();
+                        map.put("username", userName);
+                        map.put("password", password);
+                        map.put("nickname", nickname);
+                        map.put("birthday", birthday);
+                        map.put("gender", gender + "");
+                        map.put("registrationId", MyApplication.getRegistrationId());
+                        mPresenter.registrationConfirm(map);
+                    } else {
+                        ToastUtil.show(RegisterInfoActivity.this, "极光注册失败");
+                    }
+                }
+            });
+
         }
     }
 
@@ -182,11 +209,11 @@ public class RegisterInfoActivity extends MVPBaseActivity<RegisterInfoContract.V
     @Override
     public void registrationSuccess() {
 
-        ToastUtil.show(this, "注册成功");
+        ToastUtil.show(this, "欢迎您的加入");
     }
 
     @Override
     public void registrationError() {
-        ToastUtil.show(this, "注册失败");
+        ToastUtil.show(this, "注册失败了");
     }
 }

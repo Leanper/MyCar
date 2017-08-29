@@ -97,8 +97,8 @@ public class MyApplication extends Application {
     public static void saveUid(String username) {
         SharedPreferencesUtils.saveString("UID", username);
     }
-    /*
-    获取UserId
+    /**
+     * 获取UserId
      */
     public static String getUid() {
         return SharedPreferencesUtils.getString("UID", null);
@@ -110,11 +110,23 @@ public class MyApplication extends Application {
     public static void saveUserName(String username) {
         SharedPreferencesUtils.saveString("USERNAME", username);
     }
-    /*
-    获取UserName
+    /**
+     * 获取UserName
      */
     public static String getUserName() {
         return SharedPreferencesUtils.getString("USERNAME", null);
+    }
+    /**
+     * 保存Nickname
+     */
+    public static void saveNickname(String username) {
+        SharedPreferencesUtils.saveString("NICKNAME", username);
+    }
+    /**
+     * 获取UserName
+     */
+    public static String getNickname() {
+        return SharedPreferencesUtils.getString("NICKNAME", null);
     }
 
     /**
@@ -123,8 +135,8 @@ public class MyApplication extends Application {
     public static void saveToken(String token) {
         SharedPreferencesUtils.saveString("TOKEN", token);
     }
-    /*
-    获取token
+    /**
+     * 获取token
      */
     public static String getToken() {
         return SharedPreferencesUtils.getString("TOKEN", null);
@@ -136,8 +148,8 @@ public class MyApplication extends Application {
     public static void saveIcon(String token) {
         SharedPreferencesUtils.saveString("ICON", token);
     }
-    /*
-    获取头像
+    /**
+     * 获取头像
      */
     public static String getIcon() {
         return SharedPreferencesUtils.getString("ICON", null);
@@ -150,8 +162,8 @@ public class MyApplication extends Application {
         SharedPreferencesUtils.saveString("ANDROID_ID", CommonUtils.getIMEI(MyApplication.getContext()));
     }
 
-    /*
-    获取手机设备ID
+    /**
+     * 获取手机设备ID
      */
     public static String getAndroidId() {
         return SharedPreferencesUtils.getString("ANDROID_ID", null);

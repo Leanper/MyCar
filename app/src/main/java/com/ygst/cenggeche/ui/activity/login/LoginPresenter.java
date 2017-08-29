@@ -11,7 +11,6 @@ import com.ygst.cenggeche.manager.GsonManger;
 import com.ygst.cenggeche.manager.HttpManager;
 import com.ygst.cenggeche.mvp.BasePresenterImpl;
 import com.ygst.cenggeche.utils.CommonUtils;
-import com.ygst.cenggeche.utils.MD5Util;
 import com.ygst.cenggeche.utils.ToastUtil;
 import com.ygst.cenggeche.utils.UrlUtils;
 
@@ -28,9 +27,11 @@ import rx.Observer;
 public class LoginPresenter extends BasePresenterImpl<LoginContract.View> implements LoginContract.Presenter {
 
     private static String TAG = "LoginPresenter";
+
     //校验用户是否注册
     @Override
     public void checkIsRegist(String username) {
+        final ProgressDialog progressDialog = CommonUtils.showProgressDialog(mView.getContext(), "检查账号");
         Map<String, String> map = new HashMap<>();
         map.put("username", username);
         HttpManager.getHttpManager().postMethod(UrlUtils.CHECK_IS_REGIST, new Observer<String>() {
@@ -41,25 +42,26 @@ public class LoginPresenter extends BasePresenterImpl<LoginContract.View> implem
 
             @Override
             public void onError(Throwable e) {
-                ToastUtil.show(mView.getContext(), "服务器出现问题，程序猿正在解决");
-                LogUtils.e(TAG,"返回的onError",e);
+                progressDialog.dismiss();
+                ToastUtil.show(mView.getContext(), "请求失败，请重试");
+                LogUtils.e(TAG, "返回的onError", e);
             }
 
             @Override
             public void onNext(String s) {
+                progressDialog.dismiss();
                 LogUtils.i("HttpManager", "ssss:" + s);
                 Gson gson = new Gson();
                 CodeBean codeBean = gson.fromJson(s, CodeBean.class);
-                if ("0000".equals(codeBean.getCode())) {
-                    if (mView != null) {
-                        mView.unregistered();
-                    }
-                    ToastUtil.show(mView.getContext(), codeBean.getMsg());
-                } else {
+                if ("0002".equals(codeBean.getCode())) {
+                    //已注册，可以登录
                     if (mView != null) {
                         mView.registered();
                     }
-                    ToastUtil.show(mView.getContext(), codeBean.getMsg());
+                } else {
+                    if (mView != null) {
+                        mView.unregistered();
+                    }
                 }
             }
         }, map);
@@ -102,22 +104,9 @@ public class LoginPresenter extends BasePresenterImpl<LoginContract.View> implem
 
     // 验证码登录
     @Override
-    public void login(LoginBean loginBean,String checkType) {
+    public void login(Map<String, String> map) {
 
         final ProgressDialog progressDialog = CommonUtils.showProgressDialog(mView.getContext(), "正在登录");
-        Map<String, String> map = new HashMap<>();
-        map.put("username", loginBean.getData().getUsername());
-        map.put("checkType",checkType);
-        if(checkType.equals("1")){
-            //密码登录
-            String password = MD5Util.string2MD5(loginBean.getData().getPassword()+UrlUtils.KEY);
-            map.put("password",password);
-        }else{
-            //验证码登录
-            String smsCode = MD5Util.string2MD5(loginBean.getCode()+UrlUtils.KEY);
-            map.put("smsCode",smsCode);
-        }
-
         HttpManager.getHttpManager().postMethod(UrlUtils.LOGIN, new Observer<String>() {
 
             @Override
@@ -140,7 +129,7 @@ public class LoginPresenter extends BasePresenterImpl<LoginContract.View> implem
 //                LoginBean loginBean = (LoginBean) GsonManger.getGsonManger().gsonFromat(s, new LoginBean());
 
                 Gson gson = new Gson();
-                LoginBean loginBean =gson.fromJson(s, LoginBean.class);
+                LoginBean loginBean = gson.fromJson(s, LoginBean.class);
 
                 if ("0000".equals(loginBean.getCode())) {
                     if (mView != null)

@@ -16,13 +16,16 @@ import android.widget.Toast;
 
 import com.blankj.utilcode.utils.LogUtils;
 import com.ygst.cenggeche.R;
+import com.ygst.cenggeche.app.MyApplication;
 import com.ygst.cenggeche.ui.activity.base.BaseActivity;
 import com.ygst.cenggeche.ui.activity.friendlist.FriendListActivity;
+import com.ygst.cenggeche.ui.activity.login.LoginActivity;
 import com.ygst.cenggeche.ui.fragment.cengche.CengCheFragment;
 import com.ygst.cenggeche.ui.fragment.me.MeFragment;
 import com.ygst.cenggeche.ui.fragment.message.MessageFragment;
 import com.ygst.cenggeche.ui.fragment.nearby.NearbyFragment;
 import com.ygst.cenggeche.ui.fragment.shaoren.ShaoRenFragment;
+import com.ygst.cenggeche.utils.CommonUtils;
 import com.ygst.cenggeche.utils.ToastUtil;
 
 import java.io.File;
@@ -132,7 +135,11 @@ public class MainActivity extends BaseActivity {
     //消息点击事件
     @OnClick(R.id.rl_message)
     public void onClickMessage() {
-        setOnClickMenu(R.id.rl_message);
+        if(MyApplication.isLoginEd()) {
+            setOnClickMenu(R.id.rl_message);
+        }else{
+            CommonUtils.startActivity(this, LoginActivity.class);
+        }
     }
 
     //菜单——我的
@@ -144,7 +151,11 @@ public class MainActivity extends BaseActivity {
     //我的点击事件
     @OnClick(R.id.rl_me)
     public void onClickMe() {
-        setOnClickMenu(R.id.rl_me);
+        if(MyApplication.isLoginEd()) {
+            setOnClickMenu(R.id.rl_me);
+        }else{
+            CommonUtils.startActivity(this, LoginActivity.class);
+        }
     }
 
     //顶部标题栏按钮【蹭车】

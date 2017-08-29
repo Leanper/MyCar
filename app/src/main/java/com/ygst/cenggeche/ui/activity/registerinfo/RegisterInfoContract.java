@@ -1,8 +1,9 @@
 package com.ygst.cenggeche.ui.activity.registerinfo;
 
-import com.ygst.cenggeche.bean.LoginBean;
 import com.ygst.cenggeche.mvp.BasePresenter;
 import com.ygst.cenggeche.mvp.BaseView;
+
+import java.util.Map;
 
 /**
  * MVPPlugin
@@ -17,6 +18,6 @@ public class RegisterInfoContract {
 
     interface  Presenter extends BasePresenter<View> {
         //注册确认
-       void registrationConfirm(LoginBean.DataBean userBean);
+       void registrationConfirm(Map<String, String> map);
     }
 }

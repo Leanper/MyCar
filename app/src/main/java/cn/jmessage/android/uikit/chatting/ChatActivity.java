@@ -105,7 +105,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
     private long mGroupId;
     private String mGroupName;
     private GroupInfo mGroupInfo;
-    private String mTargetId;
+    private String mTargetUserName;
     private String mTargetAppKey;
     private String mPhotoPath = null;
 
@@ -117,6 +117,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
 
         }
     };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -133,11 +134,11 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
         initReceiver();
 
         Intent intent = getIntent();
-        mTargetId = intent.getStringExtra(JMessageUtils.TARGET_ID_KEY);
+        mTargetUserName = intent.getStringExtra(JMessageUtils.TARGET_USERNAME);
         mTargetAppKey = intent.getStringExtra(TARGET_APP_KEY);
-        if (!TextUtils.isEmpty(mTargetId)) {
+        if (!TextUtils.isEmpty(mTargetUserName)) {
             mIsSingle = true;
-            mConv = JMessageClient.getSingleConversation(mTargetId, mTargetAppKey);
+            mConv = JMessageClient.getSingleConversation(mTargetUserName, mTargetAppKey);
             if (mConv != null) {
                 UserInfo userInfo = (UserInfo) mConv.getTargetInfo();
                 if (TextUtils.isEmpty(userInfo.getNickname())) {
@@ -146,7 +147,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
                     mChatView.setChatTitle(userInfo.getNickname());
                 }
             } else {
-                mConv = Conversation.createSingleConversation(mTargetId, mTargetAppKey);
+                mConv = Conversation.createSingleConversation(mTargetUserName, mTargetAppKey);
                 UserInfo userInfo = (UserInfo) mConv.getTargetInfo();
                 if (TextUtils.isEmpty(userInfo.getNickname())) {
                     mChatView.setChatTitle(userInfo.getUserName());
@@ -154,7 +155,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
                     mChatView.setChatTitle(userInfo.getNickname());
                 }
             }
-            mChatAdapter = new MsgListAdapter(mContext, mTargetId, mTargetAppKey, longClickListener);
+            mChatAdapter = new MsgListAdapter(mContext, mTargetUserName, mTargetAppKey, longClickListener);
         } else {
             mIsSingle = false;
             mGroupId = intent.getLongExtra(JMessageUtils.GROUP_ID_KEY, 0);
@@ -227,7 +228,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
             JMessageClient.exitConversation();
             //发送保存为草稿事件到会话列表
             if (mIsSingle) {
-                EventBus.getDefault().post(new Event.DraftEvent(mTargetId, mTargetAppKey,
+                EventBus.getDefault().post(new Event.DraftEvent(mTargetUserName, mTargetAppKey,
                         mChatView.getChatInput()));
             } else {
                 EventBus.getDefault().post(new Event.DraftEvent(mGroupId, mChatView.getChatInput()));
@@ -357,7 +358,6 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
 
     /**
      * 处理发送图片，刷新界面
-     *
      */
     private void handleImgRefresh(String path) {
         Bitmap bitmap = BitmapLoader.getBitmapFromFile(path, 720, 1280);
@@ -392,8 +392,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
         }
         //发送保存为草稿事件到会话列表界面,作为UIKit使用可以去掉
         if (mIsSingle) {
-            EventBus.getDefault().post(new Event.DraftEvent(mTargetId,
-                    mTargetAppKey, mChatView.getChatInput()));
+            EventBus.getDefault().post(new Event.DraftEvent(mTargetUserName, mTargetAppKey, mChatView.getChatInput()));
         } else {
             EventBus.getDefault().post(new Event.DraftEvent(mGroupId, mChatView.getChatInput()));
         }
@@ -439,7 +438,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
         if (!RecordVoiceButton.mIsPressed) {
             mChatView.dismissRecordDialog();
         }
-        String targetId = getIntent().getStringExtra(JMessageUtils.TARGET_ID_KEY);
+        String targetId = getIntent().getStringExtra(JMessageUtils.TARGET_USERNAME);
         if (!mIsSingle) {
             long groupId = getIntent().getLongExtra(JMessageUtils.GROUP_ID_KEY, 0);
             if (groupId != 0) {
@@ -788,7 +787,7 @@ public class ChatActivity extends BaseActivity implements View.OnClickListener, 
                     String targetId = userInfo.getUserName();
                     String appKey = userInfo.getAppKey();
                     //判断消息是否在当前会话中
-                    if (mIsSingle && targetId.equals(mTargetId) && appKey.equals(mTargetAppKey)) {
+                    if (mIsSingle && targetId.equals(mTargetUserName) && appKey.equals(mTargetAppKey)) {
                         Message lastMsg = mChatAdapter.getLastMsg();
                         //收到的消息和Adapter中最后一条消息比较，如果最后一条为空或者不相同，则加入到MsgList
                         if (lastMsg == null || msg.getId() != lastMsg.getId()) {

@@ -125,7 +125,7 @@ public class MessageFragment extends MVPBaseFragment<MessageContract.View, Messa
             @Override
             public void onClick(View v) {
                 final Intent intent = new Intent();
-                intent.putExtra(JMessageUtils.TARGET_ID_KEY, mEditTextTargetId.getText().toString());
+                intent.putExtra(JMessageUtils.TARGET_USERNAME, mEditTextTargetId.getText().toString());
                 intent.setClass(mContext, ChatActivity.class);
                 startActivity(intent);
             }
@@ -174,7 +174,7 @@ public class MessageFragment extends MVPBaseFragment<MessageContract.View, Messa
 
                 if (conversation.getType().equals(ConversationType.single)){
                     String targetId = ((UserInfo) conversation.getTargetInfo()).getUserName();
-                    intent.putExtra(JMessageUtils.TARGET_ID_KEY, targetId);
+                    intent.putExtra(JMessageUtils.TARGET_USERNAME, targetId);
                     intent.putExtra(JMessageUtils.TARGET_APP_KEY, conversation.getTargetAppKey());
                     intent.setClass(mContext, ChatActivity.class);
                     startActivity(intent);

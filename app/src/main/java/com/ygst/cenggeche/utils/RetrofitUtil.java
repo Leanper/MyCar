@@ -102,7 +102,7 @@ public class RetrofitUtil {
                                     public boolean verify(String hostname, SSLSession session) {
                                         return true;
                                     }
-                                }).connectTimeout(10000, TimeUnit.SECONDS).addInterceptor(new TokenInterceptor()).build();
+                                }).connectTimeout(20000, TimeUnit.SECONDS).addInterceptor(new TokenInterceptor()).build();
                         sRetrofit = new Retrofit.Builder().client(sOkHttpClient)
                                 .baseUrl(UrlUtils.BASEURl)
                                 .addConverterFactory(ScalarsConverterFactory.create())

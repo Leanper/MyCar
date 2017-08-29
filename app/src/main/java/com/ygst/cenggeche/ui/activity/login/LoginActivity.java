@@ -4,14 +4,13 @@ package com.ygst.cenggeche.ui.activity.login;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.blankj.utilcode.utils.LogUtils;
 import com.umeng.analytics.MobclickAgent;
 import com.ygst.cenggeche.R;
 import com.ygst.cenggeche.app.MyApplication;
@@ -23,8 +22,12 @@ import com.ygst.cenggeche.ui.activity.register.RegisterActivity;
 import com.ygst.cenggeche.ui.widget.TimeCount;
 import com.ygst.cenggeche.utils.CommonUtils;
 import com.ygst.cenggeche.utils.JMessageUtils;
+import com.ygst.cenggeche.utils.MD5Util;
 import com.ygst.cenggeche.utils.TextViewUtils;
 import com.ygst.cenggeche.utils.ToastUtil;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,6 +43,7 @@ import cn.jpush.im.api.BasicCallback;
 
 public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPresenter> implements LoginContract.View {
 
+    private String TAG = "LoginActivity";
     private String checkType = LoginBean.PWD_TO_LOGIN;
     private TimeCount timeCount;
 
@@ -53,6 +57,8 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
     TextView mTvForgotPwd;
     @BindView(R.id.btn_getCode)
     Button mBtnGetCode;
+    @BindView(R.id.btn_login_type)
+    Button mBtnLoginType;
 
     /**
      * 返回
@@ -61,34 +67,6 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
     public void goBack(){
         finish();
     }
-
-    /**
-     * 获取验证码
-     */
-    @OnClick(R.id.btn_getCode)
-    public void getCode() {
-        String username = TextViewUtils.getText(mEtUserName);
-        final String pwdOrCode = TextViewUtils.getText(mEtPwdCode);
-        if (!TextUtils.isEmpty(username)) {
-            if (CommonUtils.isUserNumber(username)) {
-                try {
-                    mPresenter.getSMSCode(username);
-                    timeCount.start();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            } else {
-                CommonUtils.showInfoDialog(this, "请输入正确的手机号码");
-//                ToastUtil.show(this, "请输入正确的手机号码");
-            }
-        } else {
-//            CommonUtils.showInfoDialog(this, "请输入您的手机号码");
-            ToastUtil.show(this, "请输入您的手机号码");
-        }
-    }
-
-    @BindView(R.id.btn_login_type)
-    Button mBtnLoginType;
 
     /**
      * 切换登录方式
@@ -117,6 +95,30 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
         }
     }
 
+    /**
+     * 获取验证码
+     */
+    @OnClick(R.id.btn_getCode)
+    public void getCode() {
+        String username = TextViewUtils.getText(mEtUserName);
+        final String pwdOrCode = TextViewUtils.getText(mEtPwdCode);
+        if (!TextUtils.isEmpty(username)) {
+            if (CommonUtils.isUserNumber(username)) {
+                try {
+                    mPresenter.getSMSCode(username);
+                    timeCount.start();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            } else {
+                CommonUtils.showInfoDialog(this, "请输入正确的手机号码");
+//                ToastUtil.show(this, "请输入正确的手机号码");
+            }
+        } else {
+//            CommonUtils.showInfoDialog(this, "请输入您的手机号码");
+            ToastUtil.show(this, "请输入您的手机号码");
+        }
+    }
     /**
      * 去登录
      */
@@ -149,6 +151,8 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
      */
     @OnClick(R.id.tv_register)
     public void register() {
+        timeCount.cancel();
+        timeCount.onFinish();
         CommonUtils.startActivity(this, RegisterActivity.class);
     }
 
@@ -196,15 +200,23 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
             @Override
             public void gotResult(int responseCode, String LoginDesc) {
                 if (responseCode == 0) {
-                    Toast.makeText(getApplicationContext(), "登录成功", Toast.LENGTH_SHORT).show();
-                    Log.i("MainActivity", "JMessageClient.login" + ", responseCode = " + responseCode + " ; LoginDesc = " + LoginDesc);
-                    LoginBean loginBean = new LoginBean();
-                    mPresenter.login(loginBean, checkType);
+                    LogUtils.i(TAG,"极光登录成功了");
+                    Map<String, String> map = new HashMap<>();
+                    map.put("username", username);
+                    map.put("checkType",checkType);
+                    if(checkType.equals("1")){
+                        //密码登录
+                        String password = MD5Util.string2MD5(pwdOrCode);
+                        map.put("password",password);
+                    }else{
+                        //验证码登录
+                        map.put("smsCode",pwdOrCode);
+                    }
+                    mPresenter.login(map);
 //                                CommonUtils.startActivity(LoginActivity.this, MainActivity.class);
 //                                LoginActivity.this.finish();
                 } else {
-                    Toast.makeText(getApplicationContext(), "登录失败", Toast.LENGTH_SHORT).show();
-                    Log.i("MainActivity", "JMessageClient.login" + ", responseCode = " + responseCode + " ; LoginDesc = " + LoginDesc);
+                    ToastUtil.show(LoginActivity.this, "登录失败");
                 }
             }
         });
@@ -225,17 +237,24 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
 
     @Override
     public void loginSuccess(LoginBean loginBean) {
-        ToastUtil.show(this, "登录成功");
+        ToastUtil.show(this, "登录成功了");
         timeCount.cancel();
         timeCount.onFinish();
         MyApplication.clearLogin();
         // 储存登陆状态
         MyApplication.setIsLoginEd(true);
+        // 保存 uid
+        MyApplication.saveUid(loginBean.getData().getId() + "");
+        // 保存 username
+        MyApplication.saveUserName(loginBean.getData().getUsername());
+        // 保存 nickname
+        MyApplication.saveUserName(loginBean.getData().getUsername());
+        // 保存昵称 nickname
+        MyApplication.saveNickname(loginBean.getData().getNickname());
 
-        /**
-         *开启友盟账号统计
-         * （如果是使用第三方账号登录时，如新浪微博：MobclickAgent.onProfileSignIn("WB"，"userID")）;
-         */
+
+        //开启友盟账号统计
+        //（如果是使用第三方账号登录时，如新浪微博：MobclickAgent.onProfileSignIn("WB"，"userID")）;
         MobclickAgent.onProfileSignIn(loginBean.getData().getId() + "");
         CommonUtils.startActivity(this, MainActivity.class);
         CommonUtils.finishActivity(this);
@@ -243,7 +262,6 @@ public class LoginActivity extends MVPBaseActivity<LoginContract.View, LoginPres
 
     @Override
     public void loginError() {
-        ToastUtil.show(this, "登录失败");
-
+        ToastUtil.show(this, "登录失败了");
     }
 }
