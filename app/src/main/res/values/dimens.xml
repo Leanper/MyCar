@@ -36,4 +36,8 @@
     <dimen name="drop_down_list_header_progress_bar_height">36dp</dimen>
     <dimen name="default_border_width">0dp</dimen>
 
+    <!--首页viewpager的距离-->
+    <dimen name="quan_tablayout_tv">20dp</dimen>
+    <dimen name="pager_margin">10dp</dimen>
+
 </resources>

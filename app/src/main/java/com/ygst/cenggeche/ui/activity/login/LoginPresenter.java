@@ -35,7 +35,6 @@ public class LoginPresenter extends BasePresenterImpl<LoginContract.View> implem
         Map<String, String> map = new HashMap<>();
         map.put("username", username);
         HttpManager.getHttpManager().postMethod(UrlUtils.CHECK_IS_REGIST, new Observer<String>() {
-
             @Override
             public void onCompleted() {
             }

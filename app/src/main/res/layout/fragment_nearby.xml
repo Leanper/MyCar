@@ -1,23 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <ImageView
+
+    <GridView
+        android:verticalSpacing="12px"
+        android:horizontalSpacing="12px"
+        android:id="@+id/gv_nearby"
+        android:numColumns="2"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:scaleType="fitXY"
-        android:src="@drawable/qing4" />
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:scaleType="fitXY"
-        android:src="@drawable/qing3" />
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:scaleType="fitXY"
-        android:src="@drawable/qing1" />
-</LinearLayout>
+        android:layout_height="match_parent"
+        />
+
+</RelativeLayout>

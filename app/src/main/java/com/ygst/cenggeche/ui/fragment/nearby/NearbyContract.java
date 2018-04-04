@@ -12,10 +12,13 @@ import com.ygst.cenggeche.mvp.BaseView;
 
 public class NearbyContract {
     interface View extends BaseView {
+
+        void getnearbySuccess();
+        void getnearbyFail(String msg);
         
     }
 
     interface  Presenter extends BasePresenter<View> {
-        
+        void getnearBy(String uid,String lit,String lat,int page);
     }
 }

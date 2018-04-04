@@ -25,6 +25,43 @@
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.GET_TASKS" />
 
+    <!-- 高德地图定位权限 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- 用于访问wifi网络信息，wifi信息会用于进行网络定位 -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <!-- 这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位 -->
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
+
+    <!-- 请求网络 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- 不是SDK需要的权限，是示例中的后台唤醒定位需要的权限 -->
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!-- 需要运行时注册的权限 -->
+    <!-- 用于进行网络定位 -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <!-- 用于访问GPS定位 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <!-- 用于提高GPS定位速度 -->
+    <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+    <!-- 写入扩展存储，向扩展卡写入数据，用于写入缓存定位数据 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <!-- 读取缓存数据 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+
+    <!-- 用于读取手机当前的状态 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <!-- 更改设置 -->
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
+
+    <!-- 3.2.0版本增加 -->
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <!-- 3.2.0版本增加 -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+
     <application
         android:name=".app.MyApplication"
         android:allowBackup="true"
@@ -34,7 +71,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <!--启动欢迎页-->
+        <!-- 高德地图 -->
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="7d2bcd2161784132c4524623fbbd951f" />
+        <!-- 定位需要的服务 -->
+        <service android:name="com.amap.api.location.APSService"></service>
+
+        <!-- 启动欢迎页 -->
         <activity
             android:name=".ui.activity.SplashActivity"
             android:theme="@style/SplashTheme">
@@ -45,31 +89,32 @@
             </intent-filter>
         </activity>
 
-        <!--测试页-->
-        <activity android:name=".ui.activity.TestActivity"
+        <!-- 测试页 -->
+        <activity
+            android:name=".ui.activity.TestActivity"
             android:theme="@style/AppTheme" />
-        <!--登录页-->
+        <!-- 登录页 -->
         <activity android:name=".ui.activity.login.LoginActivity" />
-        <!--注册页-->
+        <!-- 注册页 -->
         <activity android:name=".ui.activity.register.RegisterActivity" />
-        <!--注册信息页-->
+        <!-- 注册信息页 -->
         <activity android:name=".ui.activity.registerinfo.RegisterInfoActivity" />
-        <!--重置密码页-->
+        <!-- 重置密码页 -->
         <activity android:name=".ui.activity.resetpwd.ResetPwdActivity" />
-        <!--主界面-->
+        <!-- 主界面 -->
         <activity android:name=".ui.activity.MainActivity" />
-        <!--自定义的聊天页-->
-        <activity android:name=".ui.activity.mychat.MyChatActivity"
+        <!-- 自定义的聊天页 -->
+        <activity
+            android:name=".ui.activity.mychat.MyChatActivity"
             android:theme="@style/BaseAppTheme" />
-        <!--添加好友-->
+        <!-- 添加好友 -->
         <activity android:name=".ui.activity.addfriend.AddFriendActivity" />
-        <!--联系人列表-->
+        <!-- 联系人列表 -->
         <activity android:name=".ui.activity.friendlist.FriendListActivity" />
-        <!--好友详细信息-->
+        <!-- 好友详细信息 -->
         <activity android:name=".ui.activity.friendinfo.FriendInfoActivity" />
 
-
-        <!--下面是极光IM功能展示界面-->
+        <!-- 下面是极光IM功能展示界面 -->
         <activity
             android:name="im.sdk.debug.RegisterAndLoginActivity"
             android:launchMode="singleTask" />
@@ -130,25 +175,48 @@
         <activity android:name="im.sdk.debug.activity.createmessage.ShowDownloadVoiceInfoActivity" />
         <activity android:name="im.sdk.debug.activity.showinfo.ShowMyInfoUpdateActivity" />
         <activity android:name="im.sdk.debug.activity.conversation.RetractMessageActivity" />
-
         <activity
             android:name="cn.jmessage.android.uikit.DemoActivity"
-            android:theme="@style/noTitle"></activity>
+            android:theme="@style/noTitle" />
         <activity android:name="cn.jmessage.android.uikit.chatting.BaseActivity" />
         <activity
             android:name="cn.jmessage.android.uikit.AboutActivity"
             android:theme="@style/noTitle" />
         <activity
             android:name="cn.jmessage.android.uikit.chatting.ChatActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:theme="@style/JchatTheme" />
+            android:theme="@style/JchatTheme"
+            android:windowSoftInputMode="adjustPan" />
 
-<!--============================图片选择器================================-->
-        <activity android:name="com.jarek.imageselect.activity.MainActivity"/>
-        <activity android:name="com.jarek.imageselect.activity.FolderListActivity"/>
-        <activity android:name="com.jarek.imageselect.activity.ImageSelectActivity"/>
-        <activity android:name="com.jarek.imageselect.activity.PreviewImageActivity"
-            android:theme="@style/Translucent"/>
+        <!-- ============================图片选择器================================ -->
+        <activity android:name="com.jarek.imageselect.activity.MainActivity" />
+        <activity android:name="com.jarek.imageselect.activity.FolderListActivity" />
+        <activity android:name="com.jarek.imageselect.activity.ImageSelectActivity" />
+        <activity
+            android:name="com.jarek.imageselect.activity.PreviewImageActivity"
+            android:theme="@style/Translucent" />
+
+        <!-- 发布行程 -->
+        <activity android:name=".ui.activity.releaseplan.ReleaseplanActivity" />
+
+        <!-- 行程信息 -->
+        <activity android:name=".ui.activity.travelinfo.TravelInfoActivity" />
+
+        <!-- 确定带上他信息 -->
+        <activity android:name=".ui.activity.suretravel.SureTravelActivity" />
+
+        <!-- 选择地址 -->
+        <activity android:name=".ui.activity.suretravel.SureAddrActivity" />
+
+        <!-- 带上他的发布行程信息 -->
+        <activity android:name=".ui.activity.itinerary.ItineraryActivity" />
+
+        <!-- 地理位置检索 -->
+        <activity android:name=".ui.activity.releaseplan.retrieval.RetrievalActivity" />
+        <!-- 获取车辆信息 -->
+        <activity android:name=".ui.activity.releaseplan.cartype.CartypeActivity" />
+
+        <!-- 获取附近人详细信息 -->
+        <activity android:name=".ui.activity.nearbyuserinfo.NearByUserInfoActivity" />
     </application>
 
 </manifest>

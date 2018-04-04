@@ -1,5 +1,7 @@
 package com.ygst.cenggeche.utils;
 
+import static android.R.id.list;
+
 /**
  * Created by Administrator on 2017/4/10.
  */
@@ -40,5 +42,21 @@ public class UrlUtils {
 
     // 刷新token
     public static String REFRESHTOKEN = "login/refreshToken.do";
+
+    //获取全部行程（蹭车/捎人）
+    public static String ALLTRAVEL = "/stroke/confirmStroke.do";
+
+    //发布行程（车主/用户）接口
+    public static String RELEASESTROKE = "/stroke/releaseStroke.do";
+
+    //获取车辆品牌列表接口
+    public static String GETALLCARBRAND = "/car/getAllCarBrand.do";
+
+    //根据车辆品牌获取车系接口
+    public static String GETALLCARTYPEBRAND = "/car/getCarTypeByBrand.do";
+    //获取附近联系人
+    public static String GETNEARBYPERSON = "/lookAround/list.do";
+
+
 
 }

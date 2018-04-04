@@ -12,10 +12,12 @@ import com.ygst.cenggeche.mvp.BaseView;
 
 public class CengCheContract {
     interface View extends BaseView {
-        
+        void getAllInfoSuccess();
+        void getAllInfoFail();
+
     }
 
     interface  Presenter extends BasePresenter<View> {
-        
+        void getAllinfo(int page,String type);
     }
 }
